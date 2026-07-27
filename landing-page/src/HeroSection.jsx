@@ -76,6 +76,21 @@ const HIGHLIGHTS = {
   integrity: { n: '05', title: 'Admissions', caption: 'Begin the journey' },
 };
 
+/* The real site's hero slider — its six banner photos land on the ribbon
+   surface in the final phase (hotlinked for now; self-host for production) */
+const EIS = 'https://excellenceinternationalschool.com/wp-content/uploads/2026/03';
+const BANNERS = [
+  `${EIS}/Home-Banner-1.png`,
+  `${EIS}/Home-Banner-02.jpg.jpeg`,
+  `${EIS}/Home-Banner-002.jpg.jpeg`,
+  `${EIS}/Home-Banner-003-scaled.png`,
+  `${EIS}/Home-Banner-4-1.png`,
+  `${EIS}/Home-Banner-5-1-scaled.png`,
+];
+const WORDMARK = `${EIS}/Logo2.png`;
+const NAV_ITEMS = ['Home', 'About Us', 'Academics', 'Admissions', 'School Facilities', 'Gallery', 'Blog', 'Contact Us'];
+const NAV_DROPDOWNS = ['Academics', 'Admissions'];
+
 /* ─── Polar to cartesian ────────────────────────────── */
 function polarToCartesian(cx, cy, r, angleDeg) {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
@@ -386,16 +401,56 @@ export default function HeroSection() {
     const RIBBON_MID = HINGE_R * ((CUT + 180) * RAD);
 
     /* Unroll: curvature radius grows while arc angles compress, anchored at
-       the front tangent line, so the surface flattens without stretching */
-    const unrollPos = (angle, u) => {
+       the front tangent line, so the surface flattens without stretching.
+       `off` offsets along the surface normal (elements hovering above it). */
+    const unrollPos = (angle, u, off = 0) => {
       let phi = (((angle - FRONT) % 360) + 360) % 360;
       if (phi >= CUT + 360) phi -= 360; // φ ∈ [CUT, CUT + 360)
+      if (u >= 0.996) {
+        /* Fully flat — closed form (the curved math degenerates as R → ∞) */
+        return { beta: FRONT, x: -(HINGE_R * phi * RAD), y: HINGE_R + off };
+      }
       const R = HINGE_R / (1 - u);
       const beta = FRONT + phi * (1 - u);
       const cx = dirX(FRONT) * (HINGE_R - R);
       const cy = dirY(FRONT) * (HINGE_R - R);
-      return { beta, R, cx, cy, x: cx + dirX(beta) * R, y: cy + dirY(beta) * R };
+      return { beta, x: cx + dirX(beta) * (R + off), y: cy + dirY(beta) * (R + off) };
     };
+
+    /* The formed slider cycles the site's banner photos; arrows and
+       bullets control it once the hero has assembled */
+    const photoEl = section.querySelector('.slider-photo');
+    const spA = section.querySelector('.sp-a');
+    const spB = section.querySelector('.sp-b');
+    const dots = Array.from(section.querySelectorAll('.slider-dot'));
+    const prevBtn = section.querySelector('.slider-arrow-prev');
+    const nextBtn = section.querySelector('.slider-arrow-next');
+    let slide = 0, sliding = false, lastP = 0;
+    spA.style.backgroundImage = `url("${BANNERS[0]}")`;
+    const goTo = (n) => {
+      const next = ((n % BANNERS.length) + BANNERS.length) % BANNERS.length;
+      if (sliding || next === slide) return;
+      sliding = true;
+      spB.style.backgroundImage = `url("${BANNERS[next]}")`;
+      spB.style.opacity = '1';
+      dots.forEach((d, i) => d.classList.toggle('active', i === next));
+      setTimeout(() => {
+        spA.style.backgroundImage = spB.style.backgroundImage;
+        spB.style.opacity = '0';
+        slide = next;
+        sliding = false;
+      }, 950);
+    };
+    const onPrev = () => goTo(slide - 1);
+    const onNext = () => goTo(slide + 1);
+    prevBtn.addEventListener('click', onPrev);
+    nextBtn.addEventListener('click', onNext);
+    const dotFns = dots.map((d, i) => {
+      const fn = () => goTo(i);
+      d.addEventListener('click', fn);
+      return fn;
+    });
+    const autoTimer = setInterval(() => { if (lastP > 0.9) goTo(slide + 1); }, 5000);
 
     let raf = 0;
     const update = () => {
@@ -418,25 +473,39 @@ export default function HeroSection() {
       const scale = 1 + 0.75 * easeInOut(ramp(p, 0.32, 0.55)) + 0.35 * easeInOut(ramp(p, 0.52, 0.78));
       s.setProperty('--cyl-scale', String(scale));
       s.setProperty('--ring-o', String(1 - ramp(p, 0.19, 0.29)));
-      s.setProperty('--panel-o', String(ramp(p, 0.16, 0.26)));
+      /* Strips dissolve at the end as the banner photo takes over the surface */
+      s.setProperty('--panel-o', String(ramp(p, 0.16, 0.26) * (1 - ramp(p, 0.8, 0.9))));
       const pitch = -90 * easeInOut(ramp(p, 0.17, 0.46));
       const yaw = 28 * easeOut(ramp(p, 0, 0.55));
 
-      /* Stage 3: the drum peels open at the seam and unrolls into the ribbon */
+      /* Stage 3: the drum peels open at the seam and unrolls into the ribbon.
+         Stage 4 (s4) straightens the last soft curls and lands the site's
+         hero: banner photos on the surface, real header, slider chrome. */
       const uE = easeInOut(ramp(p, 0.52, 0.78));
-      const u = 0.965 * uE; // never fully flat — both ends keep a soft curl
-      s.setProperty('--face-o', String(easeOut(ramp(p, 0.7, 0.82))));
-      s.setProperty('--lift', `${uE * window.innerHeight * 0.38}px`);
-
-      /* Stage 4: the school site's hero arrives — menu, left logo, headline */
       const s4 = easeInOut(ramp(p, 0.8, 0.94));
+      const u = 0.965 * uE + 0.035 * s4;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      /* The site's slider is a fixed-ratio band (1200 × 500 → w / 2.4),
+         not full-screen; cap it so it always fits under the header */
+      const sliderH = Math.min(vw / 2.4, vh - 116);
+      s.setProperty('--face-o', String(easeOut(ramp(p, 0.62, 0.78)) * (1 - ramp(p, 0.8, 0.88))));
+      /* Land the surface's hinge line on the slider band's bottom edge */
+      const liftEnd = 116 + sliderH - vh / 2 - 12;
+      s.setProperty('--lift', `${(uE * 0.38 * vh + s4 * (liftEnd - 0.38 * vh)).toFixed(1)}px`);
+      /* The glass floor dissolves as the surface peels away from it, and the
+         ambient stage props clear out for the final website hero */
+      s.setProperty('--floor-o', String(1 - ramp(p, 0.52, 0.66)));
+      s.setProperty('--amb-o', String(1 - ramp(p, 0.6, 0.8)));
+
       s.setProperty('--menu-o', String(s4));
-      s.setProperty('--logo-x', `${(-s4 * (window.innerWidth / 2 - 69)).toFixed(1)}px`);
-      const copyIn = easeOut(ramp(p, 0.84, 0.97));
-      s.setProperty('--copy-o', String(copyIn));
-      s.setProperty('--copy-y', `${(1 - copyIn) * 28}px`);
-      /* −24 optically recenters against the asymmetric end-curl perspective */
-      panelsEl.style.transform = `translateX(${((RIBBON_MID - 24) * uE).toFixed(2)}px)`;
+      s.setProperty('--logo-x', `${(-s4 * (vw / 2 - 69)).toFixed(1)}px`);
+      s.setProperty('--logo-dy', `${(s4 * 40).toFixed(1)}px`);
+      s.setProperty('--photo-o', String(easeInOut(ramp(p, 0.8, 0.9))));
+      s.setProperty('--chrome-o', String(easeOut(ramp(p, 0.88, 0.97))));
+      section.dataset.chrome = p > 0.88 ? '1' : '0';
+      /* −24 optically recenters mid-unroll; it releases in the final phase so
+         the banner plane lands exactly on the viewport centre */
+      panelsEl.style.transform = `translateX(${((RIBBON_MID - 24 * (1 - s4)) * uE).toFixed(2)}px)`;
 
       for (const el of strips) {
         const theta = +el.dataset.theta + yaw;
@@ -454,19 +523,43 @@ export default function HeroSection() {
 
       /* Cards hover a hair above the surface along its normal */
       for (const el of faces) {
-        const g = unrollPos(+el.dataset.mid + yaw, Math.max(u, 0.001));
-        const k = (g.R + 4) / g.R;
-        const fx = g.cx + (g.x - g.cx) * k;
-        const fy = g.cy + (g.y - g.cy) * k;
+        const g = unrollPos(+el.dataset.mid + yaw, Math.max(u, 0.001), 4);
         el.style.transform =
-          `translate(${fx.toFixed(2)}px, ${(fy - H / 2).toFixed(2)}px) ` +
+          `translate(${g.x.toFixed(2)}px, ${(g.y - H / 2).toFixed(2)}px) ` +
           `rotateZ(${g.beta.toFixed(3)}deg) rotateX(-90deg) rotateY(180deg)`;
       }
 
+      /* Banner plane rides the ribbon's arc midpoint (φ = 154° at yaw 28°),
+         growing past the strips to fill header → viewport bottom at any
+         window size. 2.536 / 1.207 convert assembly px to rendered px at
+         the end pose (scale 2.1, tilt 88°, perspective 1850). */
+      s.setProperty('--photo-w', `${(vw / 2.536).toFixed(1)}px`);
+      const PH = H + s4 * (sliderH / 1.207 - H);
+      s.setProperty('--photo-h', `${PH.toFixed(1)}px`);
+      /* The 3D pose stretches the plane anisotropically (×2.536 w, ×1.207 h),
+         so CSS `cover` would crop against the wrong box — emulate cover in
+         RENDERED space and express it in local percentages instead */
+      const rw = vw, rh = PH * 1.207, rImg = 2.4; // banners are 1200 × 500
+      let bsW = 100, bsH = 100;
+      if (rw / rh >= rImg) bsH = (rw / rImg / rh) * 100;
+      else bsW = ((rh * rImg) / rw) * 100;
+      s.setProperty('--bs-w', `${bsW.toFixed(2)}%`);
+      s.setProperty('--bs-h', `${bsH.toFixed(2)}%`);
+      /* Arrows centre on the slider band; bullets sit just above its edge */
+      s.setProperty('--arrow-t', `${(116 + sliderH / 2).toFixed(0)}px`);
+      s.setProperty('--dots-b', `${(vh - 116 - sliderH + 18).toFixed(0)}px`);
+      const gp = unrollPos(306 + yaw, Math.max(u, 0.001), 2);
+      photoEl.style.transform =
+        `translate(${gp.x.toFixed(2)}px, ${(gp.y - PH / 2).toFixed(2)}px) ` +
+        `rotateZ(${gp.beta.toFixed(3)}deg) rotateX(-90deg) rotateY(180deg)`;
+
+      lastP = p;
       section.dataset.folded = p > 0.2 ? '1' : '0';
     };
 
     const onScroll = () => {
+      /* rAF stalls in hidden/background documents — keep state current */
+      if (document.hidden) { update(); return; }
       if (!raf) raf = requestAnimationFrame(update);
     };
     update();
@@ -475,6 +568,10 @@ export default function HeroSection() {
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
+      prevBtn.removeEventListener('click', onPrev);
+      nextBtn.removeEventListener('click', onNext);
+      dots.forEach((d, i) => d.removeEventListener('click', dotFns[i]));
+      clearInterval(autoTimer);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
@@ -483,25 +580,33 @@ export default function HeroSection() {
     <section className="hero-section" aria-label="School Hero" ref={sectionRef}>
       <div className="hero-sticky">
 
-      {/* Glass navigation bar — fades in as the transformation begins */}
+      {/* Gold contact strip — the site's topbar, slides in above the nav */}
+      <div className="top-bar" aria-hidden="true">
+        <span>✆ +91 7055582117</span>
+        <span>Admissions Open</span>
+      </div>
+
+      {/* Glass navigation bar — fades in as the transformation begins,
+          then settles into the school site's white header */}
       <header className="glass-nav" aria-hidden="true">
+        <img className="nav-wordmark" src={WORDMARK} alt="" draggable="false" />
         <nav className="nav-menu">
-          <span>Home</span>
-          <span>About Us</span>
-          <span>Academics</span>
-          <span>Admissions</span>
-          <span>Facilities</span>
-          <span>Gallery</span>
-          <span>Contact Us</span>
+          {NAV_ITEMS.map((item) => (
+            <span key={item}>
+              {item}
+              {NAV_DROPDOWNS.includes(item) && <i className="nav-caret" />}
+            </span>
+          ))}
         </nav>
       </header>
 
-      {/* Final hero copy — the school site's hero arrives over the ribbon */}
-      <div className="hero-copy" aria-hidden="true">
-        <span className="hero-badge">Admissions Open</span>
-        <h1 className="hero-headline">Best School in Aligarh, Uttar&nbsp;Pradesh</h1>
-        <p className="hero-tagline">Excellence International School — Shaping Future Leaders Through Quality Education</p>
-        <span className="hero-cta">Quick Enquiry</span>
+      {/* Slider chrome — the site's carousel arrows and square bullets */}
+      <button className="slider-arrow slider-arrow-prev" type="button" aria-label="Previous slide">‹</button>
+      <button className="slider-arrow slider-arrow-next" type="button" aria-label="Next slide">›</button>
+      <div className="slider-dots" aria-label="Slides">
+        {BANNERS.map((b, i) => (
+          <button key={b} type="button" className={`slider-dot${i === 0 ? ' active' : ''}`} aria-label={`Slide ${i + 1}`} />
+        ))}
       </div>
 
       {/* Ambient background lights */}
@@ -590,6 +695,12 @@ export default function HeroSection() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* The site's hero banner — lands on the flattened ribbon */}
+              <div className="slider-photo">
+                <div className="sp-layer sp-a" />
+                <div className="sp-layer sp-b" />
               </div>
             </div>
 
