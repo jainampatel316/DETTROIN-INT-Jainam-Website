@@ -72,14 +72,11 @@ const MENU = [
   { label: 'Contact Us', href: '#contact' },
 ];
 
-function SiteHeader() {
+export function SiteHeader() {
   return (
     <header className="site-header">
       <a className="sh-brand" href="#top" aria-label="Excellence International School — home">
         <img src="/Excellence-Logo.png.webp" alt="" className="sh-emblem" draggable="false" />
-        <span className="sh-name">
-          Excellence International <em>School</em>
-        </span>
       </a>
 
       <nav className="sh-nav" aria-label="Site">
@@ -704,7 +701,6 @@ function Footer() {
 export default function SiteBody() {
   return (
     <div className="site-body" id="top">
-      <SiteHeader />
       <main>
         <About />
         <VisionMission />

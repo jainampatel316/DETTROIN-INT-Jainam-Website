@@ -129,9 +129,15 @@
    Sticky site header + styled dropdowns
    ════════════════════════════════════════════════════ */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
+  /* Revealed by the hero's final phase (var set on :root); defaults to
+     visible so the header stands alone if the hero is ever absent */
+  opacity: var(--menu-o, 1);
+  transform: translateY(calc((1 - var(--menu-o, 1)) * -10px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -145,6 +151,11 @@
   box-shadow: 0 10px 40px rgba(15, 53, 39, 0.06);
 }
 
+/* Until the hero journey reveals it, the header must not catch clicks */
+html[data-eis-nav='0'] .site-header {
+  pointer-events: none;
+}
+
 .sh-brand {
   display: flex;
   align-items: center;
@@ -155,17 +166,6 @@
 }
 
 .sh-emblem { width: 46px; height: 46px; object-fit: contain; }
-
-.sh-name {
-  font-family: var(--serif);
-  font-size: 19px;
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-
-.sh-name em { font-style: italic; color: var(--green); }
 
 .sh-nav {
   display: flex;
@@ -1060,7 +1060,6 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
    ════════════════════════════════════════════════════ */
 @media (max-width: 1120px) {
   .stage-grid { grid-template-columns: repeat(2, 1fr); }
-  .sh-name { display: none; }
 }
 
 @media (max-width: 940px) {

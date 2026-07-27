@@ -23,7 +23,6 @@
   --photo-h: 70px;
   --photo-w: 631px;
   --chrome-o: 0;
-  --logo-dy: 0px;
   --persp: 1600px;
 }
 
@@ -52,71 +51,10 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.5);
   border-bottom: 1px solid rgba(15, 23, 42, 0.07);
   box-shadow: 0 8px 32px rgba(15, 23, 42, 0.05);
-  opacity: var(--nav-o);
-  transform: translateY(calc((1 - var(--nav-o)) * -12px + var(--menu-o) * 40px));
+  /* Fades in for the docking phase, then hands off to the real header */
+  opacity: calc(var(--nav-o) * (1 - var(--menu-o)));
+  transform: translateY(calc((1 - var(--nav-o)) * -12px));
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 44px 0 20px;
-}
-
-/* The site's wide wordmark logo, crossfading in at the left slot */
-.nav-wordmark {
-  height: 44px;
-  width: auto;
-  opacity: var(--menu-o);
-  user-select: none;
-}
-
-/* Menu links arrive in the final phase, matching the school site's nav */
-.nav-menu {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  opacity: var(--menu-o);
-  transform: translateX(calc((1 - var(--menu-o)) * 14px));
-}
-
-.nav-menu span {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: #2d3339;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.nav-caret {
-  width: 7px;
-  height: 7px;
-  border-right: 1.6px solid #2d3339;
-  border-bottom: 1.6px solid #2d3339;
-  transform: rotate(45deg) translateY(-2px);
-}
-
-/* ─── Gold Contact Strip (the site's topbar) ────────── */
-.top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  z-index: 21;
-  background: #FFB606;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 44px 0 20px;
-  transform: translateY(calc((var(--menu-o) - 1) * 40px));
-  opacity: var(--menu-o);
-  pointer-events: none;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1f2937;
 }
 
 /* ─── Hero Banner Plane (the site's slider photos) ──── */
@@ -149,7 +87,7 @@
 /* ─── Slider Chrome (arrows + square bullets, per site) ─ */
 .slider-arrow {
   position: absolute;
-  top: var(--arrow-t, calc(116px + (100vh - 116px) / 2));
+  top: var(--arrow-t, calc(78px + (100vh - 78px) / 2));
   transform: translateY(-50%);
   z-index: 18;
   width: 44px;
@@ -619,7 +557,7 @@
   --float-amp: calc((1 - var(--logo-t)) * -7px);
   transform:
     translateX(var(--logo-x))
-    translateY(calc(var(--logo-t) * (-50vh + 38px) + var(--logo-dy)))
+    translateY(calc(var(--logo-t) * (-50vh + 39px)))
     scale(calc(1 - 0.64 * var(--logo-t)));
 }
 

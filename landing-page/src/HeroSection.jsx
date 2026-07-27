@@ -87,9 +87,8 @@ const BANNERS = [
   `${EIS}/Home-Banner-4-1.png`,
   `${EIS}/Home-Banner-5-1-scaled.png`,
 ];
-const WORDMARK = `${EIS}/Logo2.png`;
-const NAV_ITEMS = ['Home', 'About Us', 'Academics', 'Admissions', 'School Facilities', 'Gallery', 'Blog', 'Contact Us'];
-const NAV_DROPDOWNS = ['Academics', 'Admissions'];
+/* Header height of the fixed site header the hero hands off to */
+const HEADER_H = 78;
 
 /* ─── Polar to cartesian ────────────────────────────── */
 function polarToCartesian(cx, cy, r, angleDeg) {
@@ -487,10 +486,10 @@ export default function HeroSection() {
       const vw = window.innerWidth, vh = window.innerHeight;
       /* The site's slider is a fixed-ratio band (1200 × 500 → w / 2.4),
          not full-screen; cap it so it always fits under the header */
-      const sliderH = Math.min(vw / 2.4, vh - 116);
+      const sliderH = Math.min(vw / 2.4, vh - HEADER_H);
       s.setProperty('--face-o', String(easeOut(ramp(p, 0.62, 0.78)) * (1 - ramp(p, 0.8, 0.88))));
       /* Land the surface's hinge line on the slider band's bottom edge */
-      const liftEnd = 116 + sliderH - vh / 2 - 12;
+      const liftEnd = HEADER_H + sliderH - vh / 2 - 12;
       s.setProperty('--lift', `${(uE * 0.38 * vh + s4 * (liftEnd - 0.38 * vh)).toFixed(1)}px`);
       /* The glass floor dissolves as the surface peels away from it, and the
          ambient stage props clear out for the final website hero */
@@ -498,11 +497,16 @@ export default function HeroSection() {
       s.setProperty('--amb-o', String(1 - ramp(p, 0.6, 0.8)));
 
       s.setProperty('--menu-o', String(s4));
-      s.setProperty('--logo-x', `${(-s4 * (vw / 2 - 69)).toFixed(1)}px`);
-      s.setProperty('--logo-dy', `${(s4 * 40).toFixed(1)}px`);
+      /* The floating logo glides to the fixed header's emblem slot */
+      s.setProperty('--logo-x', `${(-s4 * (vw / 2 - 57)).toFixed(1)}px`);
       s.setProperty('--photo-o', String(easeInOut(ramp(p, 0.8, 0.9))));
       s.setProperty('--chrome-o', String(easeOut(ramp(p, 0.88, 0.97))));
       section.dataset.chrome = p > 0.88 ? '1' : '0';
+      /* Hand the reveal state to the real fixed site header (outside the
+         hero) — it fades in as the hero's placeholder bar fades out */
+      const root = document.documentElement;
+      root.style.setProperty('--menu-o', String(s4));
+      root.dataset.eisNav = s4 > 0.5 ? '1' : '0';
       /* −24 optically recenters mid-unroll; it releases in the final phase so
          the banner plane lands exactly on the viewport centre */
       panelsEl.style.transform = `translateX(${((RIBBON_MID - 24 * (1 - s4)) * uE).toFixed(2)}px)`;
@@ -546,8 +550,8 @@ export default function HeroSection() {
       s.setProperty('--bs-w', `${bsW.toFixed(2)}%`);
       s.setProperty('--bs-h', `${bsH.toFixed(2)}%`);
       /* Arrows centre on the slider band; bullets sit just above its edge */
-      s.setProperty('--arrow-t', `${(116 + sliderH / 2).toFixed(0)}px`);
-      s.setProperty('--dots-b', `${(vh - 116 - sliderH + 18).toFixed(0)}px`);
+      s.setProperty('--arrow-t', `${(HEADER_H + sliderH / 2).toFixed(0)}px`);
+      s.setProperty('--dots-b', `${(vh - HEADER_H - sliderH + 18).toFixed(0)}px`);
       const gp = unrollPos(306 + yaw, Math.max(u, 0.001), 2);
       photoEl.style.transform =
         `translate(${gp.x.toFixed(2)}px, ${(gp.y - PH / 2).toFixed(2)}px) ` +
@@ -580,25 +584,9 @@ export default function HeroSection() {
     <section className="hero-section" aria-label="School Hero" ref={sectionRef}>
       <div className="hero-sticky">
 
-      {/* Gold contact strip — the site's topbar, slides in above the nav */}
-      <div className="top-bar" aria-hidden="true">
-        <span>✆ +91 7055582117</span>
-        <span>Admissions Open</span>
-      </div>
-
-      {/* Glass navigation bar — fades in as the transformation begins,
-          then settles into the school site's white header */}
-      <header className="glass-nav" aria-hidden="true">
-        <img className="nav-wordmark" src={WORDMARK} alt="" draggable="false" />
-        <nav className="nav-menu">
-          {NAV_ITEMS.map((item) => (
-            <span key={item}>
-              {item}
-              {NAV_DROPDOWNS.includes(item) && <i className="nav-caret" />}
-            </span>
-          ))}
-        </nav>
-      </header>
+      {/* Empty glass bar the logo docks into — it hands off to the real
+          fixed site header (rendered by App) in the final phase */}
+      <header className="glass-nav" aria-hidden="true" />
 
       {/* Slider chrome — the site's carousel arrows and square bullets */}
       <button className="slider-arrow slider-arrow-prev" type="button" aria-label="Previous slide">‹</button>
