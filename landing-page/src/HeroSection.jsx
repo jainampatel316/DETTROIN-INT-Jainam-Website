@@ -1,71 +1,80 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import './HeroSection.css';
 
-import { Handshake, ShieldCheck, Users, Target, Heart, ClipboardCheck } from 'lucide-react';
+import { Award, Compass, Palette, ShieldCheck, Users } from 'lucide-react';
 
-/* ─── Core values data ──────────────────────────────── */
+/* ─── Core values data — five curved sections ───────── */
 const VALUES = [
   {
-    id: 'honesty',
-    label: 'Honesty',
-    desc: 'Speaking truth with courage and grace',
+    id: 'excellence',
+    label: 'Excellence',
+    desc: 'The pursuit of the extraordinary',
     startAngle: -90,
-    sweepAngle: 60,
-    gradId: 'gradHonesty',
-    Icon: Handshake,
-    color: '#fcdeae', // Pastel Peach
+    sweepAngle: 72,
+    gradId: 'gradExcellence',
+    Icon: Award,
+    color: '#f9e7b4', // Champagne
+  },
+  {
+    id: 'leadership',
+    label: 'Leadership',
+    desc: 'Courage to walk first',
+    startAngle: -18,
+    sweepAngle: 72,
+    gradId: 'gradLeadership',
+    Icon: Compass,
+    color: '#bdeaff', // Pastel Sky
+  },
+  {
+    id: 'creativity',
+    label: 'Creativity',
+    desc: 'Imagination given form',
+    startAngle: 54,
+    sweepAngle: 72,
+    gradId: 'gradCreativity',
+    Icon: Palette,
+    color: '#e7c9ff', // Pastel Lavender
   },
   {
     id: 'integrity',
     label: 'Integrity',
-    desc: 'Consistent virtue in every action',
-    startAngle: -30,
-    sweepAngle: 60,
+    desc: 'Character in every choice',
+    startAngle: 126,
+    sweepAngle: 72,
     gradId: 'gradIntegrity',
     Icon: ShieldCheck,
-    color: '#f9f1b4', // Pastel Yellow
-  },
-  {
-    id: 'respect',
-    label: 'Respect',
-    desc: 'Honouring the dignity in every person',
-    startAngle: 30,
-    sweepAngle: 60,
-    gradId: 'gradRespect',
-    Icon: Users,
     color: '#beffda', // Pastel Mint
   },
   {
-    id: 'discipline',
-    label: 'Discipline',
-    desc: 'The foundation of every great achievement',
-    startAngle: 90,
-    sweepAngle: 60,
-    gradId: 'gradDiscipline',
-    Icon: Target,
-    color: '#bdeaff', // Pastel Sky
-  },
-  {
-    id: 'compassion',
-    label: 'Compassion',
-    desc: 'Leading with empathy and understanding',
-    startAngle: 150,
-    sweepAngle: 60,
-    gradId: 'gradCompassion',
-    Icon: Heart,
-    color: '#e7c9ff', // Pastel Lavender
-  },
-  {
-    id: 'responsibility',
-    label: 'Responsibility',
-    desc: 'Owning our actions and their consequences',
-    startAngle: 210,
-    sweepAngle: 60,
-    gradId: 'gradResponsibility',
-    Icon: ClipboardCheck,
-    color: '#ffc1c4', // Pastel Pink
+    id: 'community',
+    label: 'Community',
+    desc: 'Stronger, together',
+    startAngle: 198,
+    sweepAngle: 72,
+    gradId: 'gradCommunity',
+    Icon: Users,
+    color: '#ffc9cc', // Blush
   },
 ];
+
+/* ─── Halo ring geometry (shared by defs + ring) ───── */
+const RING_CX = 350;
+const RING_CY = 350;
+const RING_INNER = 238;
+const RING_OUTER = 358;
+
+/* Strips per value segment on the 3D cylinder wall (72° / 6 = 12° each) */
+const CYL_STRIPS = 6;
+
+/* School-highlight cards revealed when the cylinder unrolls into the
+   hero ribbon — keyed by value id, numbered left-to-right along it */
+const HIGHLIGHTS = {
+  creativity: { n: '01', title: 'Campus Life', caption: 'Where days unfold' },
+  leadership: { n: '02', title: 'Academics', caption: 'Classrooms & laboratories' },
+  excellence: { n: '03', title: 'Sports', caption: 'Strength in motion' },
+  community: { n: '04', title: 'Culture', caption: 'Arts & achievements' },
+  integrity: { n: '05', title: 'Admissions', caption: 'Begin the journey' },
+};
 
 /* ─── Polar to cartesian ────────────────────────────── */
 function polarToCartesian(cx, cy, r, angleDeg) {
@@ -167,12 +176,12 @@ function SvgDefs() {
 
       {/* Clip for halo ring annular shape */}
       <clipPath id="haloClip">
-        <path d={annularSegmentPath(350, 350, 248, 348, -90, 360, 0)} />
+        <path d={annularSegmentPath(RING_CX, RING_CY, RING_INNER, RING_OUTER, -90, 360, 0)} />
       </clipPath>
 
       {/* Radial segment image placeholders */}
       {VALUES.map((v) => {
-        const center = iconCenter(350, 350, 248, 348, v.startAngle, v.sweepAngle);
+        const center = iconCenter(RING_CX, RING_CY, RING_INNER, RING_OUTER, v.startAngle, v.sweepAngle);
         return (
           <radialGradient key={`imgph-${v.id}`} id={`imgph-${v.id}`} cx={`${center.x / 700 * 100}%`} cy={`${center.y / 700 * 100}%`} r="12%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.18)" />
@@ -199,8 +208,8 @@ function SvgDefs() {
 
 /* ─── Halo Ring SVG ─────────────────────────────────── */
 function HaloRingSVG({ onSegmentHover, onSegmentLeave }) {
-  const CX = 350, CY = 350;
-  const INNER = 248, OUTER = 348;
+  const CX = RING_CX, CY = RING_CY;
+  const INNER = RING_INNER, OUTER = RING_OUTER;
   const LABEL_R = 310;
   const IMAGE_R = 298;
   const GAP = 2.2;
@@ -336,6 +345,7 @@ function HaloRingSVG({ onSegmentHover, onSegmentLeave }) {
 export default function HeroSection() {
   const [tooltip, setTooltip] = useState({ visible: false, value: null, x: 0, y: 0 });
   const stageRef = useRef(null);
+  const sectionRef = useRef(null);
 
   const handleSegmentHover = useCallback((value, e) => {
     const rect = stageRef.current?.getBoundingClientRect();
@@ -352,8 +362,148 @@ export default function HeroSection() {
     setTooltip((t) => ({ ...t, visible: false }));
   }, []);
 
+  /* Scroll-driven stage 2: halo folds into a cylindrical glass gallery */
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const clamp01 = (t) => Math.min(1, Math.max(0, t));
+    const ramp = (p, a, b) => clamp01((p - a) / (b - a));
+    const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+    const strips = Array.from(section.querySelectorAll('.cyl-strip'));
+    const faces = Array.from(section.querySelectorAll('.ribbon-face'));
+    const panelsEl = section.querySelector('.cylinder-panels');
+
+    const RAD = Math.PI / 180;
+    const dirX = (d) => Math.sin(d * RAD);
+    const dirY = (d) => -Math.cos(d * RAD);
+    const FRONT = 180;   // drum angle that faces the camera after the tilt
+    const CUT = -26;     // seam where the surface tears open (a segment gap)
+    const HINGE_R = 142; // strips hinge on the disc rim
+    /* Arc midpoint of the opened ribbon — drift recenters it on screen */
+    const RIBBON_MID = HINGE_R * ((CUT + 180) * RAD);
+
+    /* Unroll: curvature radius grows while arc angles compress, anchored at
+       the front tangent line, so the surface flattens without stretching */
+    const unrollPos = (angle, u) => {
+      let phi = (((angle - FRONT) % 360) + 360) % 360;
+      if (phi >= CUT + 360) phi -= 360; // φ ∈ [CUT, CUT + 360)
+      const R = HINGE_R / (1 - u);
+      const beta = FRONT + phi * (1 - u);
+      const cx = dirX(FRONT) * (HINGE_R - R);
+      const cy = dirY(FRONT) * (HINGE_R - R);
+      return { beta, R, cx, cy, x: cx + dirX(beta) * R, y: cy + dirY(beta) * R };
+    };
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = section.getBoundingClientRect();
+      const range = rect.height - window.innerHeight;
+      const p = range > 0 ? clamp01(-rect.top / range) : 0;
+      const s = section.style;
+
+      /* Stage 1 → 2: labels out, nav in, logo docks, ring folds into a drum */
+      s.setProperty('--labels-o', String(1 - easeOut(ramp(p, 0.01, 0.12))));
+      s.setProperty('--nav-o', String(easeOut(ramp(p, 0.03, 0.17))));
+      s.setProperty('--logo-t', String(easeInOut(ramp(p, 0.06, 0.32))));
+      const tilt = 76 * easeInOut(ramp(p, 0.09, 0.46)) + 12 * easeInOut(ramp(p, 0.52, 0.76));
+      s.setProperty('--tilt', `${tilt}deg`);
+      s.setProperty('--persp', `${1600 + easeInOut(ramp(p, 0.09, 0.49)) * 250}px`);
+      /* Wall height: rises with the fold, then expands as the ribbon opens */
+      const H = 70 + easeInOut(ramp(p, 0.26, 0.52)) * 150 + easeInOut(ramp(p, 0.52, 0.78)) * 240;
+      s.setProperty('--panel-h', `${H}px`);
+      const scale = 1 + 0.75 * easeInOut(ramp(p, 0.32, 0.55)) + 0.35 * easeInOut(ramp(p, 0.52, 0.78));
+      s.setProperty('--cyl-scale', String(scale));
+      s.setProperty('--ring-o', String(1 - ramp(p, 0.19, 0.29)));
+      s.setProperty('--panel-o', String(ramp(p, 0.16, 0.26)));
+      const pitch = -90 * easeInOut(ramp(p, 0.17, 0.46));
+      const yaw = 28 * easeOut(ramp(p, 0, 0.55));
+
+      /* Stage 3: the drum peels open at the seam and unrolls into the ribbon */
+      const uE = easeInOut(ramp(p, 0.52, 0.78));
+      const u = 0.965 * uE; // never fully flat — both ends keep a soft curl
+      s.setProperty('--face-o', String(easeOut(ramp(p, 0.7, 0.82))));
+      s.setProperty('--lift', `${uE * window.innerHeight * 0.38}px`);
+
+      /* Stage 4: the school site's hero arrives — menu, left logo, headline */
+      const s4 = easeInOut(ramp(p, 0.8, 0.94));
+      s.setProperty('--menu-o', String(s4));
+      s.setProperty('--logo-x', `${(-s4 * (window.innerWidth / 2 - 69)).toFixed(1)}px`);
+      const copyIn = easeOut(ramp(p, 0.84, 0.97));
+      s.setProperty('--copy-o', String(copyIn));
+      s.setProperty('--copy-y', `${(1 - copyIn) * 28}px`);
+      /* −24 optically recenters against the asymmetric end-curl perspective */
+      panelsEl.style.transform = `translateX(${((RIBBON_MID - 24) * uE).toFixed(2)}px)`;
+
+      for (const el of strips) {
+        const theta = +el.dataset.theta + yaw;
+        if (u <= 0) {
+          el.style.transform =
+            `rotateZ(${theta}deg) translateY(calc((142px + var(--panel-h) / 2) * -1)) ` +
+            `rotateX(${pitch}deg) rotateY(180deg)`;
+        } else {
+          const g = unrollPos(theta, u);
+          el.style.transform =
+            `translate(${g.x.toFixed(2)}px, ${(g.y - H / 2).toFixed(2)}px) ` +
+            `rotateZ(${g.beta.toFixed(3)}deg) rotateX(-90deg) rotateY(180deg)`;
+        }
+      }
+
+      /* Cards hover a hair above the surface along its normal */
+      for (const el of faces) {
+        const g = unrollPos(+el.dataset.mid + yaw, Math.max(u, 0.001));
+        const k = (g.R + 4) / g.R;
+        const fx = g.cx + (g.x - g.cx) * k;
+        const fy = g.cy + (g.y - g.cy) * k;
+        el.style.transform =
+          `translate(${fx.toFixed(2)}px, ${(fy - H / 2).toFixed(2)}px) ` +
+          `rotateZ(${g.beta.toFixed(3)}deg) rotateX(-90deg) rotateY(180deg)`;
+      }
+
+      section.dataset.folded = p > 0.2 ? '1' : '0';
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section className="hero-section" aria-label="School Hero">
+    <section className="hero-section" aria-label="School Hero" ref={sectionRef}>
+      <div className="hero-sticky">
+
+      {/* Glass navigation bar — fades in as the transformation begins */}
+      <header className="glass-nav" aria-hidden="true">
+        <nav className="nav-menu">
+          <span>Home</span>
+          <span>About Us</span>
+          <span>Academics</span>
+          <span>Admissions</span>
+          <span>Facilities</span>
+          <span>Gallery</span>
+          <span>Contact Us</span>
+        </nav>
+      </header>
+
+      {/* Final hero copy — the school site's hero arrives over the ribbon */}
+      <div className="hero-copy" aria-hidden="true">
+        <span className="hero-badge">Admissions Open</span>
+        <h1 className="hero-headline">Best School in Aligarh, Uttar&nbsp;Pradesh</h1>
+        <p className="hero-tagline">Excellence International School — Shaping Future Leaders Through Quality Education</p>
+        <span className="hero-cta">Quick Enquiry</span>
+      </div>
+
       {/* Ambient background lights */}
       <div className="ambient-bg">
         <div className="ambient-blob ambient-blob-1" />
@@ -370,21 +520,81 @@ export default function HeroSection() {
         {/* Outer subtle ring */}
         <div className="outer-glow-ring" />
 
-        {/* Halo ring — rotates */}
-        <div className="halo-ring">
-          <HaloRingSVG
-            onSegmentHover={handleSegmentHover}
-            onSegmentLeave={handleSegmentLeave}
-          />
-          {/* Shimmer sweep */}
-          <div className="halo-shimmer" />
+        {/* 3D scene — flat halo folds into a cylindrical glass gallery on scroll */}
+        <div className="persp-wrap">
+          <div className="halo-3d">
+
+            {/* Halo ring */}
+            <div className="halo-ring">
+              <HaloRingSVG
+                onSegmentHover={handleSegmentHover}
+                onSegmentLeave={handleSegmentLeave}
+              />
+            </div>
+
+            {/* Inner frosted glass disc — becomes the gallery floor */}
+            <div className="inner-glass-disc" />
+
+            {/* Chromatic dispersion edge ring */}
+            <div className="chromatic-ring" />
+
+            {/* Cylinder wall — each value sliced into thin strips so the
+                surface curves smoothly, like a continuous drum */}
+            <div className="cylinder-panels">
+              {VALUES.map((v) => {
+                const step = v.sweepAngle / CYL_STRIPS;
+                return Array.from({ length: CYL_STRIPS }, (_, i) => (
+                  <div
+                    key={`${v.id}-${i}`}
+                    className={`cyl-strip${i === 0 ? ' cyl-strip-seam' : ''}`}
+                    data-theta={v.startAngle + (i + 0.5) * step}
+                    style={{
+                      backgroundImage:
+                        `linear-gradient(115deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0) 55%, rgba(255,255,255,0.12) 85%), ` +
+                        `linear-gradient(180deg, ${v.color}F2 0%, ${v.color}BF 45%, ${v.color}8C 100%)`,
+                      backgroundSize: `${CYL_STRIPS * 100}% 100%`,
+                      backgroundPosition: `${(i / (CYL_STRIPS - 1)) * 100}% 0`,
+                    }}
+                  >
+                    {i === Math.floor(CYL_STRIPS / 2) && (
+                      <div className="cyl-strip-icon">
+                        <v.Icon size={34} color="#1f2937" strokeWidth={1.5} />
+                      </div>
+                    )}
+                  </div>
+                ));
+              })}
+
+              {/* Highlight cards — flat faces that settle onto the unrolled ribbon */}
+              <div className="ribbon-faces">
+                {VALUES.map((v) => {
+                  const h = HIGHLIGHTS[v.id];
+                  return (
+                    <div
+                      key={v.id}
+                      className="ribbon-face"
+                      data-mid={midAngle(v.startAngle, v.sweepAngle)}
+                    >
+                      <div
+                        className="face-art"
+                        style={{
+                          backgroundImage:
+                            `radial-gradient(120% 90% at 30% 18%, ${v.color}F0 0%, ${v.color}00 62%), ` +
+                            `linear-gradient(165deg, ${v.color}E6 0%, ${v.color}59 55%, rgba(255,255,255,0.35) 100%)`,
+                        }}
+                      >
+                        <span className="face-index">{h.n}</span>
+                      </div>
+                      <h3 className="face-title">{h.title}</h3>
+                      <span className="face-caption">{h.caption}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
         </div>
-
-        {/* Inner frosted glass disc */}
-        <div className="inner-glass-disc" />
-
-        {/* Chromatic dispersion edge ring */}
-        <div className="chromatic-ring" />
 
         {/* Logo — perfectly centered, does not rotate */}
         <div className="logo-center">
@@ -432,13 +642,7 @@ export default function HeroSection() {
         )}
       </div>
 
-      {/* Bottom credits */}
-      <footer className="hero-credits" aria-hidden="true">
-        <div className="credit-dot" />
-        <span className="credit-text">Honesty · Integrity · Respect · Discipline · Compassion · Responsibility</span>
-        <div className="credit-dot" />
-      </footer>
-
+      </div>
     </section>
   );
 }
