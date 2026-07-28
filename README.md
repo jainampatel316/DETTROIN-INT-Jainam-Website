@@ -15,7 +15,7 @@ interface components throughout.
 | **Email Address** | jainampatel087@gmail.com |
 | **GitHub Username** | [jainampatel316](https://github.com/jainampatel316) |
 | **Selected Website** | [excellenceinternationalschool.com](https://excellenceinternationalschool.com/) |
-| **Live Demo Link** | `<!-- TODO: add deployed URL -->` |
+| **Live Demo Link** | https://dettroin-int-jaina-git-18e0ed-pateljainam087-gmailcoms-projects.vercel.app/ |
 | **Repository** | [DETTROIN-INT-Jainam-Website](https://github.com/jainampatel316/DETTROIN-INT-Jainam-Website) |
 
 ---
