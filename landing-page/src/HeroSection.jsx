@@ -3,7 +3,7 @@ import './HeroSection.css';
 
 import { Award, Compass, Palette, ShieldCheck, Users } from 'lucide-react';
 
-/* ─── Core values data — five curved sections ───────── */
+/* ─── Core values data: five curved sections ───────── */
 const VALUES = [
   {
     id: 'excellence',
@@ -67,7 +67,7 @@ const RING_OUTER = 358;
 const CYL_STRIPS = 6;
 
 /* School-highlight cards revealed when the cylinder unrolls into the
-   hero ribbon — keyed by value id, numbered left-to-right along it */
+   hero ribbon, keyed by value id, numbered left-to-right along it */
 const HIGHLIGHTS = {
   creativity: { n: '01', title: 'Campus Life', caption: 'Where days unfold' },
   leadership: { n: '02', title: 'Academics', caption: 'Classrooms & laboratories' },
@@ -76,7 +76,7 @@ const HIGHLIGHTS = {
   integrity: { n: '05', title: 'Admissions', caption: 'Begin the journey' },
 };
 
-/* The real site's hero slider — its six banner photos land on the ribbon
+/* The real site's hero slider: its six banner photos land on the ribbon
    surface in the final phase (hotlinked for now; self-host for production) */
 const EIS = 'https://excellenceinternationalschool.com/wp-content/uploads/2026/03';
 const BANNERS = [
@@ -251,7 +251,7 @@ function HaloRingSVG({ onSegmentHover, onSegmentLeave }) {
             fill={`url(#${v.gradId})`}
           />
 
-          {/* Image placeholder region — swap with <image> tag when you have assets */}
+          {/* Image placeholder region: swap with <image> tag when you have assets */}
           <path
             d={annularSegmentPath(CX, CY, INNER, OUTER, v.startAngle, v.sweepAngle, GAP)}
             fill={`url(#imgph-${v.id})`}
@@ -396,7 +396,7 @@ export default function HeroSection() {
     const FRONT = 180;   // drum angle that faces the camera after the tilt
     const CUT = -26;     // seam where the surface tears open (a segment gap)
     const HINGE_R = 142; // strips hinge on the disc rim
-    /* Arc midpoint of the opened ribbon — drift recenters it on screen */
+    /* Arc midpoint of the opened ribbon: drift recenters it on screen */
     const RIBBON_MID = HINGE_R * ((CUT + 180) * RAD);
 
     /* Unroll: curvature radius grows while arc angles compress, anchored at
@@ -406,7 +406,7 @@ export default function HeroSection() {
       let phi = (((angle - FRONT) % 360) + 360) % 360;
       if (phi >= CUT + 360) phi -= 360; // φ ∈ [CUT, CUT + 360)
       if (u >= 0.996) {
-        /* Fully flat — closed form (the curved math degenerates as R → ∞) */
+        /* Fully flat: closed form (the curved math degenerates as R → ∞) */
         return { beta: FRONT, x: -(HINGE_R * phi * RAD), y: HINGE_R + off };
       }
       const R = HINGE_R / (1 - u);
@@ -503,7 +503,7 @@ export default function HeroSection() {
       s.setProperty('--chrome-o', String(easeOut(ramp(p, 0.88, 0.97))));
       section.dataset.chrome = p > 0.88 ? '1' : '0';
       /* Hand the reveal state to the real fixed site header (outside the
-         hero) — it fades in as the hero's placeholder bar fades out */
+         hero): it fades in as the hero's placeholder bar fades out */
       const root = document.documentElement;
       root.style.setProperty('--menu-o', String(s4));
       root.dataset.eisNav = s4 > 0.5 ? '1' : '0';
@@ -541,7 +541,7 @@ export default function HeroSection() {
       const PH = H + s4 * (sliderH / 1.207 - H);
       s.setProperty('--photo-h', `${PH.toFixed(1)}px`);
       /* The 3D pose stretches the plane anisotropically (×2.536 w, ×1.207 h),
-         so CSS `cover` would crop against the wrong box — emulate cover in
+         so CSS `cover` would crop against the wrong box: emulate cover in
          RENDERED space and express it in local percentages instead */
       const rw = vw, rh = PH * 1.207, rImg = 2.4; // banners are 1200 × 500
       let bsW = 100, bsH = 100;
@@ -562,7 +562,7 @@ export default function HeroSection() {
     };
 
     const onScroll = () => {
-      /* rAF stalls in hidden/background documents — keep state current */
+      /* rAF stalls in hidden/background documents, so keep state current */
       if (document.hidden) { update(); return; }
       if (!raf) raf = requestAnimationFrame(update);
     };
@@ -584,11 +584,11 @@ export default function HeroSection() {
     <section className="hero-section" aria-label="School Hero" ref={sectionRef}>
       <div className="hero-sticky">
 
-      {/* Empty glass bar the logo docks into — it hands off to the real
+      {/* Empty glass bar the logo docks into: it hands off to the real
           fixed site header (rendered by App) in the final phase */}
       <header className="glass-nav" aria-hidden="true" />
 
-      {/* Slider chrome — the site's carousel arrows and square bullets */}
+      {/* Slider chrome: the site's carousel arrows and square bullets */}
       <button className="slider-arrow slider-arrow-prev" type="button" aria-label="Previous slide">‹</button>
       <button className="slider-arrow slider-arrow-next" type="button" aria-label="Next slide">›</button>
       <div className="slider-dots" aria-label="Slides">
@@ -613,7 +613,7 @@ export default function HeroSection() {
         {/* Outer subtle ring */}
         <div className="outer-glow-ring" />
 
-        {/* 3D scene — flat halo folds into a cylindrical glass gallery on scroll */}
+        {/* 3D scene: flat halo folds into a cylindrical glass gallery on scroll */}
         <div className="persp-wrap">
           <div className="halo-3d">
 
@@ -625,13 +625,13 @@ export default function HeroSection() {
               />
             </div>
 
-            {/* Inner frosted glass disc — becomes the gallery floor */}
+            {/* Inner frosted glass disc: becomes the gallery floor */}
             <div className="inner-glass-disc" />
 
             {/* Chromatic dispersion edge ring */}
             <div className="chromatic-ring" />
 
-            {/* Cylinder wall — each value sliced into thin strips so the
+            {/* Cylinder wall: each value sliced into thin strips so the
                 surface curves smoothly, like a continuous drum */}
             <div className="cylinder-panels">
               {VALUES.map((v) => {
@@ -658,7 +658,7 @@ export default function HeroSection() {
                 ));
               })}
 
-              {/* Highlight cards — flat faces that settle onto the unrolled ribbon */}
+              {/* Highlight cards: flat faces that settle onto the unrolled ribbon */}
               <div className="ribbon-faces">
                 {VALUES.map((v) => {
                   const h = HIGHLIGHTS[v.id];
@@ -685,7 +685,7 @@ export default function HeroSection() {
                 })}
               </div>
 
-              {/* The site's hero banner — lands on the flattened ribbon */}
+              {/* The site's hero banner: lands on the flattened ribbon */}
               <div className="slider-photo">
                 <div className="sp-layer sp-a" />
                 <div className="sp-layer sp-b" />
@@ -695,7 +695,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Logo — perfectly centered, does not rotate */}
+        {/* Logo: perfectly centered, does not rotate */}
         <div className="logo-center">
           <img
             src="/Excellence-Logo.png.webp"

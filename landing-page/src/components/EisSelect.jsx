@@ -1,7 +1,7 @@
 import * as Select from '@radix-ui/react-select';
 import { Check, ChevronDown } from 'lucide-react';
 
-/* Styled dropdown built on Radix Select — accessible, keyboard-driven,
+/* Styled dropdown built on Radix Select: accessible, keyboard-driven,
    with typeahead. Rendered without a portal so it inherits the design
    tokens scoped to .site-body. */
 export default function EisSelect({ options, value, onChange, placeholder, label }) {

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-/* Scroll-reveal wrapper — adds .in once the element enters the viewport */
-export default function Reveal({ as: Tag = 'div', className = '', delay = 0, children, ...rest }) {
+/* Scroll-reveal wrapper: adds .in once the element enters the viewport */
+export default function Reveal({ as: Tag = 'div', className = '', delay = 0, style, children, ...rest }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Reveal({ as: Tag = 'div', className = '', delay = 0, chi
   }, []);
 
   return (
-    <Tag ref={ref} className={`rv ${className}`} style={{ '--rv-d': `${delay}ms` }} {...rest}>
+    <Tag ref={ref} className={`rv ${className}`} style={{ '--rv-d': `${delay}ms`, ...style }} {...rest}>
       {children}
     </Tag>
   );

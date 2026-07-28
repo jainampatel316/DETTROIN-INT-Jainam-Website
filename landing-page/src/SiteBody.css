@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════
-   Excellence International School — site design system
+   Excellence International School: site design system
    Brand: deep green ink · gold accent · glass surfaces
-   Type: Cormorant Garamond display · sans body · mono kickers
+   Type: Cormorant Garamond display · sans body · mono microlabels
    ════════════════════════════════════════════════════ */
 
 .site-body {
@@ -75,32 +75,13 @@
 }
 
 /* ─── Headings ──────────────────────────────────────── */
-.kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--green);
-}
-
-.kicker::before {
-  content: '';
-  width: 26px;
-  height: 2px;
-  background: var(--gold);
-}
-
 .sec-title {
   font-family: var(--serif);
   font-size: clamp(34px, 4vw, 52px);
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: 0.005em;
-  margin: 16px 0 0;
+  margin: 0;
   color: inherit;
 }
 
@@ -121,8 +102,6 @@
 
 .sec-head { margin-bottom: 58px; }
 .sec-head.center { text-align: center; }
-.sec-head.center .kicker { justify-content: center; }
-.tone-dark .kicker { color: var(--gold); }
 .tone-dark .sec-lede { color: rgba(238, 245, 241, 0.72); }
 
 /* ════════════════════════════════════════════════════
@@ -203,7 +182,7 @@ html[data-eis-nav='0'] .site-header {
 .has-sub:hover .sh-caret,
 .has-sub:focus-within .sh-caret { transform: rotate(225deg) translateY(-1px); }
 
-/* Dropdown panel — the styled replacement for the default menus */
+/* Dropdown panel: the styled replacement for the default menus */
 .sh-drop {
   position: absolute;
   top: calc(100% + 10px);
@@ -466,7 +445,7 @@ html[data-eis-nav='0'] .site-header {
   border-left: 2px solid rgba(255, 182, 6, 0.5);
 }
 
-/* Numbered pillars — no boxes, just rules and type */
+/* Numbered pillars: no boxes, just rules and type */
 .vm-points { list-style: none; margin: 0; padding: 0; }
 
 .vm-points li {
@@ -851,34 +830,56 @@ html[data-eis-nav='0'] .site-header {
    Values band
    ════════════════════════════════════════════════════ */
 .val-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
 }
 
-.val-pill {
+/* Pastel value cards carrying the school's own icon set */
+.val-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 30px 14px 26px;
+  border-radius: 28px;
+  background: linear-gradient(168deg,
+    var(--tint) 0%,
+    color-mix(in srgb, var(--tint) 68%, white) 100%);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.2);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s;
+}
+
+.val-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 28px 58px rgba(0, 0, 0, 0.3);
+}
+
+.val-badge {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 26px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  font-family: var(--serif);
-  font-size: 19px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: background-color 0.35s, border-color 0.35s, transform 0.35s;
+  justify-content: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(15, 53, 39, 0.13);
 }
 
-.val-pill:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 182, 6, 0.5);
-  transform: translateY(-3px);
+.val-badge img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
 }
 
-.val-dot { width: 11px; height: 11px; border-radius: 50%; }
+.val-name {
+  font-family: var(--sans);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--green-deep);
+  text-align: center;
+  line-height: 1.2;
+}
 
 /* ════════════════════════════════════════════════════
    Testimonials
@@ -1067,7 +1068,7 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
   box-shadow: 0 0 0 4px rgba(255, 182, 6, 0.16);
 }
 
-/* ─── Select (Radix) — the styled dropdown ──────────── */
+/* ─── Select (Radix): the styled dropdown ──────────── */
 .eis-select-btn {
   display: flex;
   align-items: center;
@@ -1175,7 +1176,7 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
 .adm-success p { color: var(--body-c); margin: 0 0 24px; }
 
 /* ════════════════════════════════════════════════════
-   FAQ accordion — fully styled expanded state
+   FAQ accordion: fully styled expanded state
    ════════════════════════════════════════════════════ */
 .faq-list { display: grid; gap: 14px; }
 
@@ -1358,6 +1359,7 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
   .sec { padding: 84px 0; }
   .grid-2 { grid-template-columns: 1fr; gap: 48px; }
   .why-grid, .tst-grid { grid-template-columns: 1fr 1fr; }
+  .val-row { grid-template-columns: repeat(3, 1fr); }
   .vm-panel { grid-template-columns: 1fr; gap: 40px; }
   .vm-tablist { margin-bottom: 40px; }
   .vm-trigger { font-size: 23px; padding: 12px 22px 16px; }
@@ -1369,6 +1371,9 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
 @media (max-width: 640px) {
   .wrap { padding: 0 22px; }
   .why-grid, .tst-grid, .f-row, .about-points { grid-template-columns: 1fr; }
+  .val-row { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .val-badge { width: 66px; height: 66px; }
+  .val-badge img { width: 38px; height: 38px; }
   .foot-grid { grid-template-columns: 1fr; gap: 36px; }
   .foot-bar-in { flex-direction: column; gap: 8px; }
   .sh-cta { display: none; }

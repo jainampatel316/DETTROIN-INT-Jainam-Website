@@ -45,7 +45,7 @@ const MENU = [
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <a className="sh-brand" href="#top" aria-label="Excellence International School — home">
+      <a className="sh-brand" href="#top" aria-label="Excellence International School home">
         <img src="/Excellence-Logo.png.webp" alt="" className="sh-emblem" draggable="false" />
       </a>
 
@@ -89,13 +89,12 @@ function About() {
     <section className="sec" id="about">
       <div className="wrap grid-2">
         <Reveal className="about-copy">
-          <span className="kicker">About the School</span>
           <h2 className="sec-title">
             Where character, discipline and learning <em>grow together</em>
           </h2>
           <p>
             Excellence International School, on Ramghat Road in Aligarh, is built around a simple
-            conviction — that a child who feels safe, seen and inspired will learn without limits.
+            conviction: that a child who feels safe, seen and inspired will learn without limits.
           </p>
           <p>
             From Play Group to Class 8, our classrooms pair a strong academic core with
@@ -134,7 +133,7 @@ function About() {
   );
 }
 
-/* ─── Vision & Mission — editorial tabbed statement ─── */
+/* ─── Vision & Mission: editorial tabbed statement ─── */
 const VM_TABS = [
   {
     id: 'vision',
@@ -168,7 +167,6 @@ function VisionMission() {
       <div className="wrap">
         <Heading
           tone="dark"
-          kicker="Our Compass"
           title={<>Vision &amp; Mission</>}
           lede="The two commitments every classroom, teacher and programme answers to."
         />
@@ -228,7 +226,7 @@ const JOURNEY = [
     title: 'Pre-Primary School',
     ages: 'Ages 3 – 5',
     span: 'Play Group to UKG',
-    text: 'Early childhood as it should be — curiosity, creativity and first skills nurtured in a joyful, unhurried environment.',
+    text: 'Early childhood as it should be, with curiosity, creativity and first skills nurtured in a joyful, unhurried environment.',
     img: `${EIS}/Pre-Primary-School.png`,
     tint: '#f9e7b4',
     Icon: Baby,
@@ -297,9 +295,8 @@ function Stages() {
     <section className="sec" id="stages">
       <div className="wrap">
         <Heading
-          kicker="Our Academics"
           title={<>One journey, from first steps <em>to Class 8</em></>}
-          lede="Twelve years of growing up, mapped as a single continuous path — each stage built on the one before it."
+          lede="Twelve years of growing up, mapped as a single continuous path, each stage built on the one before it."
         />
 
         <div className="journey" ref={railRef}>
@@ -356,7 +353,7 @@ function Stages() {
 /* ─── Why us ────────────────────────────────────────── */
 const WHY = [
   { Icon: BookOpen, title: 'Strong Academic System', text: 'A rigorous, well-sequenced curriculum that builds real understanding, not rote habit.' },
-  { Icon: Users, title: 'Experienced, Dedicated Faculty', text: 'Teachers who know every child by name — and by strength.' },
+  { Icon: Users, title: 'Experienced, Dedicated Faculty', text: 'Teachers who know every child by name, and by strength.' },
   { Icon: FlaskConical, title: 'STREAM Education', text: 'Science, technology, reading, engineering, arts and maths woven into everyday learning.' },
   { Icon: Sparkles, title: 'Skill-Based Learning', text: 'Communication, problem-solving and life skills practised, not just preached.' },
   { Icon: ShieldCheck, title: 'Safe & Secure Campus', text: 'A monitored, caring environment where parents can be at ease.' },
@@ -368,9 +365,8 @@ function WhyUs() {
     <section className="sec sec-mist" id="why">
       <div className="wrap">
         <Heading
-          kicker="Why Families Choose Us"
           title="The best of Aligarh, by design"
-          lede="Modern infrastructure and a positive, motivating learning environment — every detail serves the child."
+          lede="Modern infrastructure and a positive, motivating learning environment. Every detail serves the child."
         />
         <div className="why-grid">
           {WHY.map((w, i) => (
@@ -401,9 +397,8 @@ function Holistic() {
     <section className="sec" id="holistic">
       <div className="wrap">
         <Heading
-          kicker="Beyond the Classroom"
           title="Holistic Development Approach"
-          lede="Sport, stage, service and self — every child gets the whole picture."
+          lede="Sport, stage, service and self. Every child gets the whole picture."
         />
         <div className="hol-row">
           {HOLISTIC.map((hItem, i) => (
@@ -420,12 +415,12 @@ function Holistic() {
 
 /* ─── Values band ───────────────────────────────────── */
 const SITE_VALUES = [
-  { label: 'Honesty', tint: '#fcdeae' },
-  { label: 'Integrity', tint: '#f9f1b4' },
-  { label: 'Respect', tint: '#beffda' },
-  { label: 'Discipline', tint: '#bdeaff' },
-  { label: 'Compassion', tint: '#e7c9ff' },
-  { label: 'Responsibility', tint: '#ffc1c4' },
+  { label: 'Honesty', tint: '#fcdeae', img: `${EIS}/Honesty1.png` },
+  { label: 'Integrity', tint: '#f9f1b4', img: `${EIS}/integrity1.png` },
+  { label: 'Respect', tint: '#beffda', img: `${EIS}/Respect1.png` },
+  { label: 'Discipline', tint: '#bdeaff', img: `${EIS}/Discipline01.png` },
+  { label: 'Compassion', tint: '#e7c9ff', img: `${EIS}/Compassion01.png` },
+  { label: 'Responsibility', tint: '#ffc1c4', img: `${EIS}/Responsibility01.png` },
 ];
 
 function Values() {
@@ -434,15 +429,16 @@ function Values() {
       <div className="wrap">
         <Heading
           tone="dark"
-          kicker="Value-Based Education"
-          title="Six values, taught daily"
-          lede="The same halo of values that opens this page lives in every classroom."
+          title={<>Value-Based <em>Education</em></>}
+          lede="Excellence International School strongly believes in developing moral values alongside academic excellence."
         />
         <div className="val-row">
           {SITE_VALUES.map((v, i) => (
-            <Reveal className="val-pill" key={v.label} delay={i * 70}>
-              <span className="val-dot" style={{ background: v.tint }} />
-              {v.label}
+            <Reveal className="val-card" key={v.label} delay={i * 80} style={{ '--tint': v.tint }}>
+              <span className="val-badge">
+                <img src={v.img} alt="" loading="lazy" />
+              </span>
+              <span className="val-name">{v.label}</span>
             </Reveal>
           ))}
         </div>
@@ -457,7 +453,6 @@ function Testimonials() {
     <section className="sec" id="testimonials">
       <div className="wrap">
         <Heading
-          kicker="Testimonials"
           title="What parents say"
           lede="Trust is earned one child at a time."
         />
@@ -484,7 +479,7 @@ function Testimonials() {
               {Array.from({ length: 5 }, (_, i) => <Star key={i} size={15} strokeWidth={0} />)}
             </div>
             <p>
-              “Learning here is exciting — hands-on activities, group projects and creative
+              “Learning here is exciting, with hands-on activities, group projects and creative
               lessons. My child is developing genuine critical-thinking skills.”
             </p>
             <div className="tst-who">
@@ -500,7 +495,7 @@ function Testimonials() {
             <h3>Come see it yourself</h3>
             <p>
               The best way to know a school is to walk through it. Visit us on Ramghat Road, or
-              start with a quick enquiry — we’ll take it from there.
+              start with a quick enquiry and we’ll take it from there.
             </p>
             <a href="#admissions" className="btn-gold">
               Book a visit <ArrowRight size={15} strokeWidth={2.2} />
@@ -532,7 +527,6 @@ function Admissions() {
     <section className="sec sec-mist" id="admissions">
       <div className="wrap grid-2 adm-grid">
         <Reveal className="adm-copy">
-          <span className="kicker">Admissions Open</span>
           <h2 className="sec-title">
             Begin the journey <em>with one enquiry</em>
           </h2>
@@ -609,7 +603,7 @@ function Admissions() {
 const FAQS = [
   {
     q: 'Where is Excellence International School located?',
-    a: 'The school is on Ramghat Road, Aligarh 202001, Uttar Pradesh — easily reachable from across the city, with safe transport available.',
+    a: 'The school is on Ramghat Road, Aligarh 202001, Uttar Pradesh, easily reachable from across the city, with safe transport available.',
   },
   {
     q: 'Which classes are available for admission?',
@@ -617,7 +611,7 @@ const FAQS = [
   },
   {
     q: 'Does the school provide extracurricular activities?',
-    a: 'Yes — students take part in sports, cultural and creative activities, visual and performing arts, community service and personality-development programmes.',
+    a: 'Yes. Students take part in sports, cultural and creative activities, visual and performing arts, community service and personality-development programmes.',
   },
   {
     q: 'Is transportation available for students?',
@@ -625,7 +619,7 @@ const FAQS = [
   },
   {
     q: 'What makes Excellence International School one of the best schools in Aligarh?',
-    a: 'A strong academic system, experienced faculty, STREAM and skill-based learning, a secure campus and a genuine commitment to value-based education — all under one roof.',
+    a: 'A strong academic system, experienced faculty, STREAM and skill-based learning, a secure campus and a genuine commitment to value-based education, all under one roof.',
   },
 ];
 
@@ -634,7 +628,6 @@ function Faq() {
     <section className="sec" id="faq">
       <div className="wrap wrap-narrow">
         <Heading
-          kicker="Good to Know"
           title="Frequently Asked Questions"
         />
         <Reveal>
@@ -655,7 +648,7 @@ function Footer() {
           <h3>
             Excellence International <em>School</em>
           </h3>
-          <p>Character · Discipline · Learning — shaping future leaders through quality education in Aligarh.</p>
+          <p>Character · Discipline · Learning. Shaping future leaders through quality education in Aligarh.</p>
         </div>
 
         <div className="foot-col">

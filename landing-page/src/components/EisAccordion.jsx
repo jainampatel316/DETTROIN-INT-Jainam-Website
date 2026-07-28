@@ -1,6 +1,6 @@
 import * as Accordion from '@radix-ui/react-accordion';
 
-/* Styled accordion built on Radix — smooth measured-height animation,
+/* Styled accordion built on Radix: smooth measured-height animation,
    full keyboard support. `items` is [{ q, a }]. */
 export default function EisAccordion({ items, defaultOpen = 0 }) {
   return (
