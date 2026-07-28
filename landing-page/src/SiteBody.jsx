@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
 import * as Tabs from '@radix-ui/react-tabs';
 import './SiteBody.css';
 
@@ -7,6 +8,8 @@ import Reveal from './components/Reveal';
 import Heading from './components/Heading';
 import EisSelect from './components/EisSelect';
 import EisAccordion from './components/EisAccordion';
+import FieldError from './components/FieldError';
+import { validatePhone } from './validation';
 
 import {
   GraduationCap, BookOpen, FlaskConical, Bus, ShieldCheck, Users,
@@ -516,12 +519,24 @@ const GRADES = [
 ];
 
 function Admissions() {
-  const [grade, setGrade] = useState('');
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState(null);
 
-  const submit = (e) => {
-    e.preventDefault();
-    setSent(true);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: 'onTouched',
+    defaultValues: { name: '', phone: '', grade: '', message: '' },
+  });
+
+  const onSubmit = async (values) => setSent(values);
+
+  const startOver = () => {
+    reset();
+    setSent(null);
   };
 
   return (
@@ -555,42 +570,79 @@ function Admissions() {
               <span className="adm-success-ring"><GraduationCap size={28} strokeWidth={1.6} /></span>
               <h3>Thank you!</h3>
               <p>
-                Your enquiry has been noted{grade ? ` for ${grade}` : ''}. Our admissions team
-                will reach out shortly.
+                Your enquiry for {sent.grade} has been noted, {sent.name.split(' ')[0]}. Our
+                admissions team will call you on {sent.phone} shortly.
               </p>
-              <button type="button" className="btn-ghost" onClick={() => setSent(false)}>
+              <button type="button" className="btn-ghost" onClick={startOver}>
                 Send another enquiry
               </button>
             </div>
           ) : (
-            <form className="adm-form" onSubmit={submit}>
+            <form className="adm-form" onSubmit={handleSubmit(onSubmit)} noValidate>
               <h3>Quick Enquiry</h3>
               <div className="f-row">
-                <div className="f-field">
-                  <label htmlFor="f-name">Parent’s name</label>
-                  <input id="f-name" type="text" placeholder="Your full name" required />
+                <div className={`f-field${errors.name ? ' has-error' : ''}`}>
+                  <label htmlFor="f-name">Parent’s name *</label>
+                  <input
+                    id="f-name"
+                    type="text"
+                    placeholder="Your full name"
+                    aria-invalid={!!errors.name}
+                    {...register('name', {
+                      required: 'Please enter your name.',
+                      minLength: { value: 2, message: 'That name looks too short.' },
+                    })}
+                  />
+                  {errors.name && <FieldError message={errors.name.message} />}
                 </div>
-                <div className="f-field">
-                  <label htmlFor="f-phone">Phone</label>
-                  <input id="f-phone" type="tel" placeholder="+91" required />
+                <div className={`f-field${errors.phone ? ' has-error' : ''}`}>
+                  <label htmlFor="f-phone">Phone *</label>
+                  <input
+                    id="f-phone"
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    aria-invalid={!!errors.phone}
+                    {...register('phone', {
+                      required: 'Please enter a phone number.',
+                      validate: validatePhone,
+                    })}
+                  />
+                  {errors.phone && <FieldError message={errors.phone.message} />}
                 </div>
               </div>
-              <div className="f-field">
-                <label>Seeking admission for</label>
-                <EisSelect
-                  label="Class"
-                  options={GRADES}
-                  value={grade}
-                  onChange={setGrade}
-                  placeholder="Select a class"
+              <div className={`f-field${errors.grade ? ' has-error' : ''}`}>
+                <label>Seeking admission for *</label>
+                <Controller
+                  name="grade"
+                  control={control}
+                  rules={{ required: 'Please choose a class.' }}
+                  render={({ field }) => (
+                    <EisSelect
+                      label="Class"
+                      options={GRADES}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Select a class"
+                    />
+                  )}
                 />
+                {errors.grade && <FieldError message={errors.grade.message} />}
               </div>
               <div className="f-field">
                 <label htmlFor="f-msg">Message <span className="opt">(optional)</span></label>
-                <textarea id="f-msg" rows="3" placeholder="Anything you’d like us to know" />
+                <textarea
+                  id="f-msg"
+                  rows="3"
+                  placeholder="Anything you’d like us to know"
+                  {...register('message', {
+                    maxLength: { value: 500, message: 'Please keep this under 500 characters.' },
+                  })}
+                />
+                {errors.message && <FieldError message={errors.message.message} />}
               </div>
-              <button className="btn-gold btn-block" type="submit">
-                Submit enquiry <ArrowRight size={15} strokeWidth={2.2} />
+              <button className="btn-gold btn-block" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Sending…' : 'Submit enquiry'}
+                <ArrowRight size={15} strokeWidth={2.2} />
               </button>
             </form>
           )}

@@ -1068,6 +1068,48 @@ a.adm-chip:hover { border-color: rgba(255, 182, 6, 0.6); transform: translateY(-
   box-shadow: 0 0 0 4px rgba(255, 182, 6, 0.16);
 }
 
+/* ─── Validation states ─────────────────────────────── */
+.f-field.has-error input,
+.f-field.has-error textarea,
+.f-field.has-error .eis-select-btn {
+  background: #fff6f5;
+  border-color: #d9534f;
+}
+
+.f-field.has-error input:focus,
+.f-field.has-error textarea:focus,
+.f-field.has-error .eis-select-btn:focus,
+.f-field.has-error .eis-select-btn[data-state='open'] {
+  border-color: #d9534f;
+  box-shadow: 0 0 0 4px rgba(217, 83, 79, 0.14);
+}
+
+.f-field.has-error label { color: #b23c39; }
+
+.f-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #b23c39;
+  animation: fErrIn 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.f-error svg { flex-shrink: 0; }
+
+@keyframes fErrIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.btn-gold:disabled { opacity: 0.65; cursor: progress; }
+
+@media (prefers-reduced-motion: reduce) {
+  .f-error { animation: none; }
+}
+
 /* ─── Select (Radix): the styled dropdown ──────────── */
 .eis-select-btn {
   display: flex;
