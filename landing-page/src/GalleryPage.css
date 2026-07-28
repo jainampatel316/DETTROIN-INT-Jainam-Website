@@ -1,0 +1,256 @@
+/* ════════════════════════════════════════════════════
+   Gallery page: mosaic grid + full-screen lightbox.
+   Page chrome lives in PageShell.css; tokens on .site-body.
+   ════════════════════════════════════════════════════ */
+
+.g-lead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 34px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.g-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--mist);
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+}
+
+.g-count svg { color: var(--gold); }
+
+.g-lead p { margin: 0; font-size: 14.5px; color: var(--body-c); }
+
+/* ─── Mosaic grid ───────────────────────────────────── */
+.g-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 190px;
+  grid-auto-flow: dense;
+  gap: 16px;
+}
+
+.g-tile {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: 16px;
+  background: var(--mist);
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(15, 53, 39, 0.07);
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s;
+}
+
+/* Feature tiles give the grid its rhythm */
+.g-big  { grid-column: span 2; grid-row: span 2; }
+.g-wide { grid-column: span 2; }
+.g-tall { grid-row: span 2; }
+
+.g-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.g-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-pop); }
+.g-tile:hover img { transform: scale(1.06); }
+
+/* Veil with the View affordance */
+.g-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 16px;
+  background: linear-gradient(180deg,
+    rgba(12, 43, 31, 0) 45%,
+    rgba(12, 43, 31, 0.55) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.g-tile:hover .g-veil,
+.g-tile:focus-visible .g-veil { opacity: 1; }
+
+.g-zoom {
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translateY(8px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.g-tile:hover .g-zoom { transform: none; }
+
+/* A photograph that fails to load drops out rather than leaving a hole */
+.g-missing { display: none; }
+
+/* ════════════════════════════════════════════════════
+   Lightbox — rendered in a portal, so it carries its own
+   colours rather than relying on .site-body tokens.
+   ════════════════════════════════════════════════════ */
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 26, 19, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: lb-fade 0.28s ease;
+}
+
+@keyframes lb-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lb-content {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 64px 28px;
+  animation: lb-rise 0.34s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes lb-rise {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Visible heading is the caption; the Dialog title stays for screen readers */
+.lb-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lb-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  max-width: min(1100px, 100%);
+  max-height: 100%;
+}
+
+.lb-img {
+  max-width: 100%;
+  max-height: calc(100vh - 170px);
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+  background: #0c2b1f;
+}
+
+.lb-caption {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: rgba(238, 245, 241, 0.62);
+}
+
+.lb-count { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; color: #fff; }
+.lb-count i { font-style: normal; color: #FFB606; margin: 0 3px; }
+
+.lb-hint {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ─── Controls ──────────────────────────────────────── */
+.lb-nav,
+.lb-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #eef5f1;
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s, transform 0.25s;
+}
+
+.lb-nav { width: 52px; height: 52px; }
+
+.lb-nav:hover,
+.lb-close:hover {
+  background: #FFB606;
+  border-color: #FFB606;
+  color: #142a20;
+}
+
+.lb-nav:hover { transform: scale(1.06); }
+
+.lb-close {
+  position: absolute;
+  top: 24px;
+  right: 26px;
+  width: 44px;
+  height: 44px;
+}
+
+.lb-content :focus-visible {
+  outline: 2px solid #FFB606;
+  outline-offset: 3px;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .g-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 168px; }
+}
+
+@media (max-width: 760px) {
+  .g-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; gap: 12px; }
+  .lb-content { padding: 72px 12px 24px; gap: 8px; }
+  .lb-nav { width: 44px; height: 44px; }
+  .lb-img { max-height: calc(100vh - 190px); }
+  .lb-hint { display: none; }
+}
+
+@media (max-width: 460px) {
+  .g-big, .g-wide { grid-column: span 2; }
+  .g-tall { grid-row: span 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-overlay, .lb-content { animation: none; }
+  .g-tile, .g-tile img, .g-zoom { transition: none; }
+}

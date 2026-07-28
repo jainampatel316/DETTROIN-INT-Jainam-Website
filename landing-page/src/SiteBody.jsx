@@ -32,14 +32,14 @@ const MENU = [
   },
   {
     label: 'Admissions',
-    to: '/#admissions',
+    to: '/admission-enquiry-form',
     sub: [
-      { label: 'Inquiry Form', to: '/#admissions' },
-      { label: 'Admission Procedure', to: '/#admissions' },
+      { label: 'Admission Enquiry Form', to: '/admission-enquiry-form' },
+      { label: 'Admission Procedure', to: '/admission-procedure' },
     ],
   },
   { label: 'Facilities', to: '/#why' },
-  { label: 'Gallery', to: '/#stages' },
+  { label: 'Gallery', to: '/gallery' },
   { label: 'Contact Us', to: '/#contact' },
 ];
 
@@ -656,8 +656,10 @@ export function Footer() {
           <h4>Quick Links</h4>
           <Link to="/about-us">About Us</Link>
           <Link to="/#stages">Academics</Link>
-          <Link to="/#admissions">Admissions</Link>
+          <Link to="/admission-enquiry-form">Admissions</Link>
+          <Link to="/admission-procedure">Admission Procedure</Link>
           <Link to="/#why">Facilities</Link>
+          <Link to="/gallery">Gallery</Link>
           <Link to="/#faq">FAQs</Link>
         </div>
 

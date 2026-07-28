@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import './SiteBody.css';
+import './PageShell.css';
 import './AboutPage.css';
 
 import Reveal from './components/Reveal';
 import Heading from './components/Heading';
 import Airship from './components/Airship';
+import PageHero from './components/PageHero';
 import { Footer } from './SiteBody';
 
 import {
@@ -113,36 +115,6 @@ const COMMITMENTS = [
   'Providing modern learning facilities',
   'Ensuring student safety and discipline',
 ];
-
-/* ─── Page banner ───────────────────────────────────── */
-function PageHero() {
-  return (
-    <header className="pg-hero">
-      <div className="wrap pg-hero-in">
-        <div className="pg-hero-copy">
-          <Reveal className="pg-crumb">
-            <Link to="/">Home</Link>
-            <span aria-hidden="true">/</span>
-            <b>About Us</b>
-          </Reveal>
-          <Reveal className="pg-title-wrap" delay={90}>
-            <h1 className="pg-title">
-              About <em>Us</em>
-            </h1>
-            <p className="pg-lede">
-              Excellence International School, a leading school on Ramghat Road in Aligarh, where
-              academics, values and personal growth are treated as one continuous education.
-            </p>
-          </Reveal>
-        </div>
-
-        <Reveal className="pg-hero-art" delay={200}>
-          <Airship />
-        </Reveal>
-      </div>
-    </header>
-  );
-}
 
 /* ─── Who we are ────────────────────────────────────── */
 function Intro() {
@@ -343,7 +315,14 @@ function Join() {
 export default function AboutPage() {
   return (
     <div className="site-body page-body">
-      <PageHero />
+      <PageHero
+        title="About"
+        accent="Us"
+        trail={[{ label: 'About Us' }]}
+        lede="Excellence International School, a leading school on Ramghat Road in Aligarh, where academics, values and personal growth are treated as one continuous education."
+      >
+        <Airship />
+      </PageHero>
       <main>
         <Intro />
         <VisionMission />
