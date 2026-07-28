@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Tabs from '@radix-ui/react-tabs';
 import './SiteBody.css';
 
@@ -17,68 +18,68 @@ const EIS = 'https://excellenceinternationalschool.com/wp-content/uploads/2026/0
 
 /* ─── Sticky site header with styled dropdowns ──────── */
 const MENU = [
-  { label: 'Home', href: '#top' },
-  { label: 'About Us', href: '#about' },
+  { label: 'Home', to: '/' },
+  { label: 'About Us', to: '/about-us' },
   {
     label: 'Academics',
-    href: '#stages',
+    to: '/#stages',
     sub: [
-      { label: 'Pre Primary', href: '#stages' },
-      { label: 'Primary', href: '#stages' },
-      { label: 'Middle School', href: '#stages' },
-      { label: 'Daycare', href: '#stages' },
+      { label: 'Pre Primary', to: '/#stages' },
+      { label: 'Primary', to: '/#stages' },
+      { label: 'Middle School', to: '/#stages' },
+      { label: 'Daycare', to: '/#stages' },
     ],
   },
   {
     label: 'Admissions',
-    href: '#admissions',
+    to: '/#admissions',
     sub: [
-      { label: 'Inquiry Form', href: '#admissions' },
-      { label: 'Admission Procedure', href: '#admissions' },
+      { label: 'Inquiry Form', to: '/#admissions' },
+      { label: 'Admission Procedure', to: '/#admissions' },
     ],
   },
-  { label: 'Facilities', href: '#why' },
-  { label: 'Gallery', href: '#stages' },
-  { label: 'Contact Us', href: '#contact' },
+  { label: 'Facilities', to: '/#why' },
+  { label: 'Gallery', to: '/#stages' },
+  { label: 'Contact Us', to: '/#contact' },
 ];
 
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <a className="sh-brand" href="#top" aria-label="Excellence International School home">
+      <Link className="sh-brand" to="/" aria-label="Excellence International School home">
         <img src="/Excellence-Logo.png.webp" alt="" className="sh-emblem" draggable="false" />
-      </a>
+      </Link>
 
       <nav className="sh-nav" aria-label="Site">
         {MENU.map((item) =>
           item.sub ? (
             <div className="sh-item has-sub" key={item.label}>
-              <a href={item.href} className="sh-link" aria-haspopup="true">
+              <Link to={item.to} className="sh-link" aria-haspopup="true">
                 {item.label}
                 <i className="sh-caret" />
-              </a>
+              </Link>
               <div className="sh-drop">
                 {item.sub.map((s) => (
-                  <a key={s.label} href={s.href} className="sh-drop-link">
+                  <Link key={s.label} to={s.to} className="sh-drop-link">
                     {s.label}
                     <ArrowRight size={13} strokeWidth={2} />
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
           ) : (
             <div className="sh-item" key={item.label}>
-              <a href={item.href} className="sh-link">
+              <Link to={item.to} className="sh-link">
                 {item.label}
-              </a>
+              </Link>
             </div>
           ),
         )}
       </nav>
 
-      <a className="sh-cta" href="#admissions">
+      <Link className="sh-cta" to="/#admissions">
         Enquire Now
-      </a>
+      </Link>
     </header>
   );
 }
@@ -331,9 +332,9 @@ function Stages() {
                     </span>
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
-                    <a href="#admissions" className="stage-link">
+                    <Link to="/#admissions" className="stage-link">
                       Admission details <ArrowRight size={14} strokeWidth={2} />
-                    </a>
+                    </Link>
                   </div>
                 </article>
               </li>
@@ -497,9 +498,9 @@ function Testimonials() {
               The best way to know a school is to walk through it. Visit us on Ramghat Road, or
               start with a quick enquiry and we’ll take it from there.
             </p>
-            <a href="#admissions" className="btn-gold">
+            <Link to="/#admissions" className="btn-gold">
               Book a visit <ArrowRight size={15} strokeWidth={2.2} />
-            </a>
+            </Link>
           </Reveal>
         </div>
       </div>
@@ -639,7 +640,7 @@ function Faq() {
 }
 
 /* ─── Footer ────────────────────────────────────────── */
-function Footer() {
+export function Footer() {
   return (
     <footer className="site-footer" id="contact">
       <div className="wrap foot-grid">
@@ -653,19 +654,19 @@ function Footer() {
 
         <div className="foot-col">
           <h4>Quick Links</h4>
-          <a href="#about">About Us</a>
-          <a href="#stages">Academics</a>
-          <a href="#admissions">Admissions</a>
-          <a href="#why">Facilities</a>
-          <a href="#faq">FAQs</a>
+          <Link to="/about-us">About Us</Link>
+          <Link to="/#stages">Academics</Link>
+          <Link to="/#admissions">Admissions</Link>
+          <Link to="/#why">Facilities</Link>
+          <Link to="/#faq">FAQs</Link>
         </div>
 
         <div className="foot-col">
           <h4>Academics</h4>
-          <a href="#stages">Pre-Primary School</a>
-          <a href="#stages">Primary School</a>
-          <a href="#stages">Middle School</a>
-          <a href="#stages">Daycare</a>
+          <Link to="/#stages">Pre-Primary School</Link>
+          <Link to="/#stages">Primary School</Link>
+          <Link to="/#stages">Middle School</Link>
+          <Link to="/#stages">Daycare</Link>
         </div>
 
         <div className="foot-col foot-contact">

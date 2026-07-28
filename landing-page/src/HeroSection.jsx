@@ -577,6 +577,10 @@ export default function HeroSection() {
       dots.forEach((d, i) => d.removeEventListener('click', dotFns[i]));
       clearInterval(autoTimer);
       if (raf) cancelAnimationFrame(raf);
+      /* Release the header state so interior pages (no hero) show it */
+      const root = document.documentElement;
+      root.style.removeProperty('--menu-o');
+      delete root.dataset.eisNav;
     };
   }, []);
 
