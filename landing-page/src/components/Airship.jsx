@@ -1,10 +1,12 @@
+import './HeroArt.css';
+
 /* Hand-drawn airship carrying children, used as the About page's hero
    illustration. Pure inline SVG so it needs no assets and scales cleanly;
    the float, propeller spin and cloud drift are CSS-driven. */
 export default function Airship({ className = '' }) {
   return (
     <svg
-      className={`airship ${className}`}
+      className={`hero-art-svg airship ${className}`}
       viewBox="0 0 520 440"
       xmlns="http://www.w3.org/2000/svg"
       role="img"

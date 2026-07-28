@@ -33,80 +33,8 @@
 
 .g-lead p { margin: 0; font-size: 14.5px; color: var(--body-c); }
 
-/* ─── Mosaic grid ───────────────────────────────────── */
-.g-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 190px;
-  grid-auto-flow: dense;
-  gap: 16px;
-}
-
-.g-tile {
-  position: relative;
-  display: block;
-  padding: 0;
-  overflow: hidden;
-  border: none;
-  border-radius: 16px;
-  background: var(--mist);
-  cursor: pointer;
-  box-shadow: 0 6px 22px rgba(15, 53, 39, 0.07);
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.45s;
-}
-
-/* Feature tiles give the grid its rhythm */
-.g-big  { grid-column: span 2; grid-row: span 2; }
-.g-wide { grid-column: span 2; }
-.g-tall { grid-row: span 2; }
-
-.g-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.g-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-pop); }
-.g-tile:hover img { transform: scale(1.06); }
-
-/* Veil with the View affordance */
-.g-veil {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: 16px;
-  background: linear-gradient(180deg,
-    rgba(12, 43, 31, 0) 45%,
-    rgba(12, 43, 31, 0.55) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.g-tile:hover .g-veil,
-.g-tile:focus-visible .g-veil { opacity: 1; }
-
-.g-zoom {
-  padding: 7px 15px;
-  border-radius: 999px;
-  background: var(--gold);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  transform: translateY(8px);
-  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-.g-tile:hover .g-zoom { transform: none; }
-
-/* A photograph that fails to load drops out rather than leaving a hole */
-.g-missing { display: none; }
+/* The photo grid itself is the React Bits Masonry component, which
+   absolutely positions its own items and carries its own styles. */
 
 /* ════════════════════════════════════════════════════
    Lightbox — rendered in a portal, so it carries its own
@@ -233,24 +161,14 @@
 }
 
 /* ─── Responsive ────────────────────────────────────── */
-@media (max-width: 1000px) {
-  .g-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 168px; }
-}
-
+/* Masonry picks its own column count from viewport width. */
 @media (max-width: 760px) {
-  .g-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; gap: 12px; }
   .lb-content { padding: 72px 12px 24px; gap: 8px; }
   .lb-nav { width: 44px; height: 44px; }
   .lb-img { max-height: calc(100vh - 190px); }
   .lb-hint { display: none; }
 }
 
-@media (max-width: 460px) {
-  .g-big, .g-wide { grid-column: span 2; }
-  .g-tall { grid-row: span 1; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .lb-overlay, .lb-content { animation: none; }
-  .g-tile, .g-tile img, .g-zoom { transition: none; }
 }

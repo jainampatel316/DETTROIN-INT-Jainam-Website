@@ -7,6 +7,7 @@ import './AdmissionsPage.css';
 import Reveal from './components/Reveal';
 import EisSelect from './components/EisSelect';
 import PageHero from './components/PageHero';
+import PaperPlane from './components/PaperPlane';
 import { Footer } from './SiteBody';
 
 import {
@@ -77,7 +78,9 @@ export default function AdmissionEnquiryPage() {
         accent="Enquiry"
         trail={[{ label: 'Admissions' }, { label: 'Enquiry Form' }]}
         lede="Tell us a little about your child and we will come back to you with the procedure, dates and everything else you need."
-      />
+      >
+        <PaperPlane />
+      </PageHero>
 
       <main>
         <section className="sec" id="enquiry">

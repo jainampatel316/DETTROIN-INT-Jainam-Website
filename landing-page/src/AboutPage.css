@@ -3,65 +3,6 @@
    design tokens come from .site-body.
    ════════════════════════════════════════════════════ */
 
-/* ─── Floating airship illustration ─────────────────── */
-.pg-hero-art {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.airship {
-  width: 100%;
-  max-width: 540px;
-  height: auto;
-  overflow: visible;
-  filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.32));
-  animation: as-float 7.5s ease-in-out infinite;
-}
-
-@keyframes as-float {
-  0%, 100% { transform: translateY(6px) rotate(-1.3deg); }
-  50%      { transform: translateY(-14px) rotate(1.3deg); }
-}
-
-/* Propeller spins about its own hub */
-.as-prop {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: as-spin 1.6s linear infinite;
-}
-
-@keyframes as-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-/* The waving child's arm */
-.as-wave {
-  transform-box: fill-box;
-  transform-origin: 8% 92%;
-  animation: as-wave 1.9s ease-in-out infinite;
-}
-
-@keyframes as-wave {
-  0%, 100% { transform: rotate(-12deg); }
-  50%      { transform: rotate(14deg); }
-}
-
-.as-cloud { transform-box: fill-box; }
-.as-cloud-1 { animation: as-drift 16s ease-in-out infinite; }
-.as-cloud-2 { animation: as-drift 21s ease-in-out infinite reverse; }
-.as-cloud-3 { animation: as-drift 26s ease-in-out infinite; }
-
-@keyframes as-drift {
-  0%, 100% { transform: translateX(0); }
-  50%      { transform: translateX(18px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .airship, .as-prop, .as-wave, .as-cloud { animation: none; }
-}
-
 /* ─── Intro facts ───────────────────────────────────── */
 .intro-stats {
   display: flex;
@@ -292,13 +233,11 @@
 
 /* ─── Responsive ────────────────────────────────────── */
 @media (max-width: 940px) {
-  .airship { max-width: 400px; }
   .vmx-grid, .pil-grid { grid-template-columns: 1fr; }
   .cmt-row { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 640px) {
-  .airship { max-width: 320px; }
   .cmt-row { grid-template-columns: 1fr; gap: 18px; }
   .vmx-col { padding: 32px 26px; }
   .intro-stats { flex-direction: column; }

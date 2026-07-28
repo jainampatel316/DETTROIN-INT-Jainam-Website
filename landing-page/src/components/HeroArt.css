@@ -1,0 +1,187 @@
+/* ════════════════════════════════════════════════════
+   Animations for the hand-drawn hero illustrations.
+   Imported by each illustration component; Vite injects
+   it once however many of them are on the page.
+   ════════════════════════════════════════════════════ */
+
+.hero-art-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ─── Airship (About Us) ────────────────────────────── */
+.airship {
+  max-width: 540px;
+  filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.32));
+  animation: ha-float 7.5s ease-in-out infinite;
+}
+
+@keyframes ha-float {
+  0%, 100% { transform: translateY(6px) rotate(-1.3deg); }
+  50%      { transform: translateY(-14px) rotate(1.3deg); }
+}
+
+.as-prop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ha-spin 1.6s linear infinite;
+}
+
+@keyframes ha-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.as-wave {
+  transform-box: fill-box;
+  transform-origin: 8% 92%;
+  animation: ha-wave 1.9s ease-in-out infinite;
+}
+
+@keyframes ha-wave {
+  0%, 100% { transform: rotate(-12deg); }
+  50%      { transform: rotate(14deg); }
+}
+
+.as-cloud { transform-box: fill-box; }
+.as-cloud-1 { animation: ha-drift 16s ease-in-out infinite; }
+.as-cloud-2 { animation: ha-drift 21s ease-in-out infinite reverse; }
+.as-cloud-3 { animation: ha-drift 26s ease-in-out infinite; }
+
+@keyframes ha-drift {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(18px); }
+}
+
+/* ─── School gate (Admission Procedure) ─────────────── */
+.gate-art {
+  max-width: 520px;
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.3));
+}
+
+/* The pupil strolls in through the open gate */
+.gt-child {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: ha-walk 5.5s ease-in-out infinite;
+}
+
+@keyframes ha-walk {
+  0%       { transform: translate(-38px, 10px) scale(0.9); opacity: 0; }
+  14%      { opacity: 1; }
+  70%      { transform: translate(6px, 0) scale(1); opacity: 1; }
+  88%, 100% { transform: translate(22px, -4px) scale(1.02); opacity: 0; }
+}
+
+.gt-flag {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: ha-flag 2.6s ease-in-out infinite;
+}
+
+@keyframes ha-flag {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50%      { transform: skewY(-5deg) scaleX(0.94); }
+}
+
+.gt-lamp {
+  animation: ha-glow 3.4s ease-in-out infinite;
+}
+
+.gt-lamp-2 { animation-delay: 1.7s; }
+
+@keyframes ha-glow {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* ─── Paper plane (Admission Enquiry) ───────────────── */
+.plane-art {
+  max-width: 520px;
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.3));
+}
+
+.pp-plane {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ha-glide 6.5s ease-in-out infinite;
+}
+
+@keyframes ha-glide {
+  0%, 100% { transform: translate(0, 8px) rotate(-2deg); }
+  50%      { transform: translate(10px, -16px) rotate(2.5deg); }
+}
+
+/* The flight path draws itself, then loops */
+.pp-trail {
+  stroke-dasharray: 9 11;
+  animation: ha-dash 2.4s linear infinite;
+}
+
+@keyframes ha-dash {
+  to { stroke-dashoffset: -40; }
+}
+
+.pp-spark { transform-box: fill-box; transform-origin: center; }
+.pp-spark-1 { animation: ha-twinkle 3s ease-in-out infinite; }
+.pp-spark-2 { animation: ha-twinkle 3.8s ease-in-out infinite 0.6s; }
+.pp-spark-3 { animation: ha-twinkle 4.4s ease-in-out infinite 1.2s; }
+
+@keyframes ha-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50%      { opacity: 1; transform: scale(1.15); }
+}
+
+/* ─── Photo string (Gallery) ────────────────────────── */
+.photos-art {
+  max-width: 540px;
+  filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.3));
+}
+
+/* Each print swings from its own peg */
+.ps-shot {
+  transform-box: fill-box;
+  transform-origin: 50% 4%;
+  animation: ha-sway 4.6s ease-in-out infinite;
+}
+
+.ps-shot-1 { animation-duration: 4.2s; animation-delay: 0s; }
+.ps-shot-2 { animation-duration: 5.1s; animation-delay: 0.35s; }
+.ps-shot-3 { animation-duration: 4.6s; animation-delay: 0.7s; }
+.ps-shot-4 { animation-duration: 5.4s; animation-delay: 0.2s; }
+
+@keyframes ha-sway {
+  0%, 100% { transform: rotate(-2.4deg); }
+  50%      { transform: rotate(2.4deg); }
+}
+
+.ps-flash {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ha-flash 4.5s ease-in-out infinite;
+}
+
+@keyframes ha-flash {
+  0%, 82%, 100% { opacity: 0.2; transform: scale(0.9); }
+  88%           { opacity: 1; transform: scale(1.25); }
+}
+
+/* ─── Motion safety ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .airship, .as-prop, .as-wave, .as-cloud,
+  .gt-child, .gt-flag, .gt-lamp,
+  .pp-plane, .pp-trail, .pp-spark,
+  .ps-shot, .ps-flash {
+    animation: none;
+  }
+  .gt-child { opacity: 1; transform: none; }
+}
+
+@media (max-width: 940px) {
+  .airship, .gate-art, .plane-art, .photos-art { max-width: 400px; }
+}
+
+@media (max-width: 640px) {
+  .airship, .gate-art, .plane-art, .photos-art { max-width: 320px; }
+}

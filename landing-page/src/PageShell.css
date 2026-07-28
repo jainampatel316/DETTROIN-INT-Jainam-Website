@@ -38,6 +38,13 @@
 
 .pg-hero-in { position: relative; z-index: 1; }
 
+/* Slot holding each page's hand-drawn illustration */
+.pg-hero-art {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
 /* Two columns only when the page supplies an illustration */
 .pg-hero-in.has-art {
   display: grid;

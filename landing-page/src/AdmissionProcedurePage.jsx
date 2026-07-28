@@ -6,6 +6,7 @@ import './AdmissionsPage.css';
 import Reveal from './components/Reveal';
 import Heading from './components/Heading';
 import PageHero from './components/PageHero';
+import SchoolGate from './components/SchoolGate';
 import { Footer } from './SiteBody';
 
 import {
@@ -69,7 +70,9 @@ export default function AdmissionProcedurePage() {
         accent="Procedure"
         trail={[{ label: 'Admissions' }, { label: 'Procedure' }]}
         lede="Everything that happens between your first visit and your child's first day, set out plainly."
-      />
+      >
+        <SchoolGate />
+      </PageHero>
 
       <main>
         {/* ─── The steps ─── */}

@@ -7,6 +7,8 @@ import './GalleryPage.css';
 import Reveal from './components/Reveal';
 import PageHero from './components/PageHero';
 import Lightbox from './components/Lightbox';
+import PhotoString from './components/PhotoString';
+import Masonry from './components/Masonry';
 import { Footer } from './SiteBody';
 
 import { Camera, ArrowRight, Phone } from 'lucide-react';
@@ -31,15 +33,17 @@ const PHOTOS = [
   },
 ];
 
-/* Mosaic rhythm: a repeating pattern of feature, wide and tall tiles so
-   the grid never reads as a plain contact sheet */
-function tileClass(i) {
-  const step = i % 9;
-  if (step === 0) return 'g-tile g-big';
-  if (step === 4) return 'g-tile g-wide';
-  if (step === 6) return 'g-tile g-tall';
-  return 'g-tile';
-}
+/* Every photograph is 600x400, so a content-driven masonry would come out
+   as a plain grid. These heights give the columns their rhythm; Masonry
+   halves each value when it lays the grid out. */
+const HEIGHT_CYCLE = [560, 700, 460, 620, 780, 500, 660, 440];
+
+const MASONRY_ITEMS = PHOTOS.map((p, i) => ({
+  id: String(i),
+  img: p.src,
+  alt: p.alt,
+  height: HEIGHT_CYCLE[i % HEIGHT_CYCLE.length],
+}));
 
 export default function GalleryPage() {
   const [open, setOpen] = useState(null);
@@ -51,7 +55,9 @@ export default function GalleryPage() {
         accent="Gallery"
         trail={[{ label: 'Gallery' }]}
         lede="Assemblies, classrooms, sports days and celebrations. A look at ordinary days at Excellence International School."
-      />
+      >
+        <PhotoString />
+      </PageHero>
 
       <main>
         <section className="sec" id="photos">
@@ -64,32 +70,16 @@ export default function GalleryPage() {
               <p>Select any photograph to view it full screen.</p>
             </Reveal>
 
-            <div className="g-grid">
-              {PHOTOS.map((p, i) => (
-                <Reveal
-                  as="button"
-                  type="button"
-                  className={tileClass(i)}
-                  key={p.src}
-                  delay={(i % 6) * 60}
-                  onClick={() => setOpen(i)}
-                  aria-label={`Open photograph ${i + 1} of ${PHOTOS.length}`}
-                >
-                  <img
-                    src={p.src}
-                    alt={p.alt}
-                    loading="lazy"
-                    decoding="async"
-                    onError={(e) => {
-                      e.currentTarget.closest('.g-tile')?.classList.add('g-missing');
-                    }}
-                  />
-                  <span className="g-veil">
-                    <span className="g-zoom">View</span>
-                  </span>
-                </Reveal>
-              ))}
-            </div>
+            <Masonry
+              items={MASONRY_ITEMS}
+              animateFrom="bottom"
+              duration={0.6}
+              stagger={0.05}
+              scaleOnHover
+              hoverScale={0.96}
+              blurToFocus
+              onItemClick={(item, index) => setOpen(index)}
+            />
           </div>
         </section>
 
