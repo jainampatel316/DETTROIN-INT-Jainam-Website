@@ -1,49 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
+import * as Tabs from '@radix-ui/react-tabs';
 import './SiteBody.css';
+
+import Reveal from './components/Reveal';
+import Heading from './components/Heading';
+import EisSelect from './components/EisSelect';
+import EisAccordion from './components/EisAccordion';
 
 import {
   GraduationCap, BookOpen, FlaskConical, Bus, ShieldCheck, Users,
-  Sparkles, HeartHandshake, Trophy, Palette, Compass, Phone, Mail,
+  Sparkles, HeartHandshake, Trophy, Palette, Phone, Mail,
   MapPin, ArrowRight, Star, Baby, School, Backpack, Sun,
 } from 'lucide-react';
 
 const EIS = 'https://excellenceinternationalschool.com/wp-content/uploads/2026/03';
-
-/* ─── Scroll-reveal ─────────────────────────────────── */
-function Reveal({ as: Tag = 'div', className = '', delay = 0, children, ...rest }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          el.classList.add('in');
-          io.disconnect();
-        }
-      },
-      { threshold: 0.14 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  return (
-    <Tag ref={ref} className={`rv ${className}`} style={{ '--rv-d': `${delay}ms` }} {...rest}>
-      {children}
-    </Tag>
-  );
-}
-
-/* ─── Section heading block ─────────────────────────── */
-function Heading({ kicker, title, lede, tone = 'light', center = true }) {
-  return (
-    <Reveal className={`sec-head ${center ? 'center' : ''} tone-${tone}`}>
-      <span className="kicker">{kicker}</span>
-      <h2 className="sec-title">{title}</h2>
-      {lede && <p className="sec-lede">{lede}</p>}
-    </Reveal>
-  );
-}
 
 /* ─── Sticky site header with styled dropdowns ──────── */
 const MENU = [
@@ -164,7 +134,34 @@ function About() {
   );
 }
 
-/* ─── Vision & Mission ──────────────────────────────── */
+/* ─── Vision & Mission — editorial tabbed statement ─── */
+const VM_TABS = [
+  {
+    id: 'vision',
+    tab: 'Vision',
+    index: '01',
+    statement: 'To create confident, responsible and innovative individuals who contribute positively to society.',
+    note: 'Every lesson, activity and interaction on campus is measured against this one sentence.',
+    points: [
+      { k: 'Confident', v: 'Children who speak, question and lead without hesitation.' },
+      { k: 'Responsible', v: 'An early, lasting sense of ownership and integrity.' },
+      { k: 'Innovative', v: 'Minds trained to make things, not just memorise them.' },
+    ],
+  },
+  {
+    id: 'mission',
+    tab: 'Mission',
+    index: '02',
+    statement: 'To deliver education that is rigorous, joyful and genuinely future-ready.',
+    note: 'Three working commitments our faculty holds itself to, every term.',
+    points: [
+      { k: 'Teach with depth', v: 'High-quality, concept-based instruction over rote learning.' },
+      { k: 'Spark curiosity', v: 'Creativity and independent thought encouraged daily.' },
+      { k: 'Build character', v: 'Discipline, empathy and strength of character, deliberately.' },
+    ],
+  },
+];
+
 function VisionMission() {
   return (
     <section className="sec sec-dark" id="vision">
@@ -175,92 +172,181 @@ function VisionMission() {
           title={<>Vision &amp; Mission</>}
           lede="The two commitments every classroom, teacher and programme answers to."
         />
-        <div className="vm-grid">
-          <Reveal className="vm-card">
-            <div className="vm-icon"><Compass size={26} strokeWidth={1.6} /></div>
-            <h3>Vision</h3>
-            <p>
-              To create confident, responsible and innovative individuals who contribute
-              positively to society.
-            </p>
-          </Reveal>
-          <Reveal className="vm-card" delay={130}>
-            <div className="vm-icon"><Trophy size={26} strokeWidth={1.6} /></div>
-            <h3>Mission</h3>
-            <ul>
-              <li>Deliver high-quality, future-ready education</li>
-              <li>Encourage curiosity, creativity and independent thought</li>
-              <li>Build discipline, empathy and strength of character</li>
-            </ul>
-          </Reveal>
-        </div>
+
+        <Reveal className="vm-shell">
+          <Tabs.Root defaultValue="vision" className="vm-tabs">
+            <Tabs.List className="vm-tablist" aria-label="Vision and Mission">
+              {VM_TABS.map((t) => (
+                <Tabs.Trigger key={t.id} value={t.id} className="vm-trigger">
+                  <span className="vm-trigger-idx">{t.index}</span>
+                  {t.tab}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+
+            {VM_TABS.map((t) => (
+              <Tabs.Content key={t.id} value={t.id} className="vm-panel">
+                <div className="vm-statement">
+                  <span className="vm-quote" aria-hidden="true">“</span>
+                  <p className="vm-lead">{t.statement}</p>
+                  <p className="vm-note">{t.note}</p>
+                </div>
+                <ul className="vm-points">
+                  {t.points.map((p, i) => (
+                    <li key={p.k} style={{ '--i': i }}>
+                      <span className="vm-point-num">{String(i + 1).padStart(2, '0')}</span>
+                      <div>
+                        <strong>{p.k}</strong>
+                        <span>{p.v}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Tabs.Content>
+            ))}
+          </Tabs.Root>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-/* ─── Academic stages ───────────────────────────────── */
-const STAGES = [
+/* ─── The academic journey ──────────────────────────── */
+const JOURNEY = [
   {
+    n: '01',
+    title: 'Daycare',
+    ages: 'Ages 1 – 3',
+    span: 'First steps',
+    text: 'A warm, safe and engaging space where our youngest are cared for like family. The first day away from home should still feel like home.',
+    img: `${EIS}/day-care.png`,
+    tint: '#beffda',
+    Icon: Sun,
+  },
+  {
+    n: '02',
     title: 'Pre-Primary School',
+    ages: 'Ages 3 – 5',
+    span: 'Play Group to UKG',
     text: 'Early childhood as it should be — curiosity, creativity and first skills nurtured in a joyful, unhurried environment.',
     img: `${EIS}/Pre-Primary-School.png`,
     tint: '#f9e7b4',
     Icon: Baby,
   },
   {
+    n: '03',
     title: 'Primary School',
-    text: 'A strong academic core takes shape while independent learning and questioning are actively encouraged.',
+    ages: 'Ages 6 – 10',
+    span: 'Class 1 to 5',
+    text: 'The academic core takes shape. Reading, reasoning and independent learning are encouraged until curiosity becomes capability.',
     img: `${EIS}/Primary-School.png`,
     tint: '#bdeaff',
     Icon: Backpack,
   },
   {
+    n: '04',
     title: 'Middle School',
-    text: 'Students step into advanced learning with analytical thinking, responsibility and study discipline.',
+    ages: 'Ages 11 – 13',
+    span: 'Class 6 to 8',
+    text: 'Students step into advanced learning with analytical thinking, responsibility and the study discipline that carries them onward.',
     img: `${EIS}/Middle.png`,
     tint: '#e7c9ff',
     Icon: School,
   },
-  {
-    title: 'Daycare',
-    text: 'A warm, safe and engaging space where the youngest members of our community are cared for like family.',
-    img: `${EIS}/Daycare.png`,
-    tint: '#beffda',
-    Icon: Sun,
-  },
 ];
 
 function Stages() {
+  const railRef = useRef(null);
+
+  /* Scroll-driven rail: the gold path fills and milestones light up as
+     the reader descends, so the section reads as a journey travelled */
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const stops = Array.from(rail.querySelectorAll('.jr-stop'));
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const r = rail.getBoundingClientRect();
+      const playhead = window.innerHeight * 0.62;
+      const p = Math.min(1, Math.max(0, (playhead - r.top) / r.height));
+      rail.style.setProperty('--jp', p.toFixed(4));
+      for (const s of stops) {
+        const sr = s.getBoundingClientRect();
+        s.classList.toggle('reached', sr.top + sr.height * 0.4 <= playhead);
+      }
+    };
+
+    const onScroll = () => {
+      if (document.hidden) { update(); return; }
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <section className="sec" id="stages">
       <div className="wrap">
         <Heading
           kicker="Our Academics"
-          title="Academic Stages"
-          lede="One continuous journey, four thoughtfully designed stages."
+          title={<>One journey, from first steps <em>to Class 8</em></>}
+          lede="Twelve years of growing up, mapped as a single continuous path — each stage built on the one before it."
         />
-        <div className="stage-grid">
-          {STAGES.map((s, i) => (
-            <Reveal className="stage-card" key={s.title} delay={i * 90}>
-              <div className="stage-media" style={{ '--tint': s.tint }}>
-                <img
-                  src={s.img}
-                  alt={s.title}
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-                <span className="stage-badge"><s.Icon size={18} strokeWidth={1.8} /></span>
-              </div>
-              <div className="stage-body">
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
-                <a href="#admissions" className="stage-link">
-                  Admission details <ArrowRight size={14} strokeWidth={2} />
-                </a>
-              </div>
-            </Reveal>
-          ))}
+
+        <div className="journey" ref={railRef}>
+          <span className="jr-track" aria-hidden="true" />
+          <span className="jr-fill" aria-hidden="true" />
+
+          <div className="jr-cap jr-cap-start">
+            <span className="jr-cap-dot" />
+            <span className="jr-cap-label">The journey begins</span>
+          </div>
+
+          <ol className="jr-list">
+            {JOURNEY.map((s) => (
+              <li className="jr-stop" key={s.title}>
+                <span className="jr-node" aria-hidden="true">
+                  <s.Icon size={19} strokeWidth={1.8} />
+                </span>
+
+                <article className="jr-card">
+                  <div className="jr-media" style={{ '--tint': s.tint }}>
+                    <img
+                      src={s.img}
+                      alt={s.title}
+                      loading="lazy"
+                      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                    />
+                    <span className="jr-ages">{s.ages}</span>
+                  </div>
+                  <div className="jr-body">
+                    <span className="jr-meta">
+                      <b>{s.n}</b> {s.span}
+                    </span>
+                    <h3>{s.title}</h3>
+                    <p>{s.text}</p>
+                    <a href="#admissions" className="stage-link">
+                      Admission details <ArrowRight size={14} strokeWidth={2} />
+                    </a>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ol>
+
+          <div className="jr-cap jr-cap-end">
+            <span className="jr-cap-dot" />
+            <span className="jr-cap-label">…and onward, ready for what follows</span>
+          </div>
         </div>
       </div>
     </section>
@@ -426,74 +512,6 @@ function Testimonials() {
   );
 }
 
-/* ─── Custom select (replaces default dropdowns) ────── */
-function CustomSelect({ options, value, onChange, placeholder, label }) {
-  const [open, setOpen] = useState(false);
-  const [hi, setHi] = useState(-1);
-  const rootRef = useRef(null);
-
-  useEffect(() => {
-    const onDoc = (e) => {
-      if (!rootRef.current?.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('pointerdown', onDoc);
-    return () => document.removeEventListener('pointerdown', onDoc);
-  }, []);
-
-  const commit = (i) => {
-    onChange(options[i]);
-    setOpen(false);
-  };
-
-  const onKey = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (open && hi >= 0) commit(hi);
-      else setOpen(true);
-    } else if (e.key === 'Escape') {
-      setOpen(false);
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setOpen(true);
-      setHi((h) => Math.min(options.length - 1, h + 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setHi((h) => Math.max(0, h - 1));
-    }
-  };
-
-  return (
-    <div className={`eis-select${open ? ' open' : ''}`} ref={rootRef}>
-      <button
-        type="button"
-        className="eis-select-btn"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label={label}
-        onClick={() => setOpen((o) => !o)}
-        onKeyDown={onKey}
-      >
-        <span className={value ? '' : 'is-placeholder'}>{value || placeholder}</span>
-        <i className="eis-caret" />
-      </button>
-      <ul className="eis-list" role="listbox" aria-label={label}>
-        {options.map((opt, i) => (
-          <li
-            key={opt}
-            role="option"
-            aria-selected={opt === value}
-            className={`eis-opt${opt === value ? ' selected' : ''}${i === hi ? ' hi' : ''}`}
-            onMouseEnter={() => setHi(i)}
-            onClick={() => commit(i)}
-          >
-            {opt}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 /* ─── Admissions / enquiry ──────────────────────────── */
 const GRADES = [
   'Play Group', 'Nursery', 'LKG', 'UKG',
@@ -564,7 +582,7 @@ function Admissions() {
               </div>
               <div className="f-field">
                 <label>Seeking admission for</label>
-                <CustomSelect
+                <EisSelect
                   label="Class"
                   options={GRADES}
                   value={grade}
@@ -612,8 +630,6 @@ const FAQS = [
 ];
 
 function Faq() {
-  const [openIdx, setOpenIdx] = useState(0);
-
   return (
     <section className="sec" id="faq">
       <div className="wrap wrap-narrow">
@@ -621,29 +637,9 @@ function Faq() {
           kicker="Good to Know"
           title="Frequently Asked Questions"
         />
-        <div className="faq-list">
-          {FAQS.map((f, i) => {
-            const open = openIdx === i;
-            return (
-              <Reveal className={`faq-item${open ? ' open' : ''}`} key={i} delay={i * 60}>
-                <button
-                  type="button"
-                  className="faq-q"
-                  aria-expanded={open}
-                  onClick={() => setOpenIdx(open ? -1 : i)}
-                >
-                  <span>{f.q}</span>
-                  <i className="faq-icon" aria-hidden="true" />
-                </button>
-                <div className="faq-a-wrap">
-                  <div className="faq-a">
-                    <p>{f.a}</p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
+        <Reveal>
+          <EisAccordion items={FAQS} defaultOpen={0} />
+        </Reveal>
       </div>
     </section>
   );
